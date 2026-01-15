@@ -1,6 +1,7 @@
 ﻿#include "menu.h"
 
 #include "resources.h"
+#include "../../module/ModuleManager.h"
 #include "../../util/globals.h"
 #include "../../util/utils.h"
 
@@ -17,6 +18,13 @@ namespace menu
         ImFont* sfui_light;
         ImFont* sfui_bold;
         ImFont* icons;
+
+        ModuleCategory selected_tab = Aimbot;
+    }
+
+    float get_scale_factor()
+    {
+        return scale_factor;
     }
 
     bool is_active()
@@ -32,7 +40,7 @@ namespace menu
         utils::get_desktop_resolution(horizontal, vertical);
         scale_factor = (static_cast<float>(horizontal) / 1920.0f + static_cast<float>(vertical) / 1080.0f) / 2.0f;
         font_size = 16 * scale_factor;
-        large_font_size = 20 * scale_factor;
+        large_font_size = 18 * scale_factor;
         poppins_regular = io.Fonts->AddFontFromMemoryCompressedBase85TTF(poppins_regular_data, font_size);
         poppins_regular_hud = io.Fonts->AddFontFromMemoryCompressedBase85TTF(
             poppins_regular_data, 256 * scale_factor);
@@ -46,27 +54,101 @@ namespace menu
 
     void draw()
     {
+        // draw menu
         theme();
+        ImGui::StyleColorsClassic();
         ImGui::GetMouseCursor();
         ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
         ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
         ImGui::GetIO().WantCaptureMouse = is_active();
         if (is_active())
         {
-            ImGui::SetNextWindowSize(ImVec2(550, 350), ImGuiCond_Once);
+            float width = 600;
+            float height = 350;
+            ImGui::SetNextWindowSize(ImVec2(width * scale_factor, height * scale_factor), ImGuiCond_Once);
             ImGui::SetNextWindowBgAlpha(1.0f);
             if (ImGui::Begin(globals::get_display_title().c_str(), &draw_imgui,
                              ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
                              ImGuiWindowFlags_NoScrollbar))
             {
-                ImGui::Button("Test");
+                // tab selection
+                ImGui::BeginTabBar("");
+                imgui_addons::tab("Aimbot", selected_tab == Aimbot, []
+                {
+                    selected_tab = Aimbot;
+                });
+                imgui_addons::tab("Visuals", selected_tab == Visuals, []
+                {
+                    selected_tab = Visuals;
+                });
+                imgui_addons::tab("Exploit", selected_tab == Exploit, []
+                {
+                    selected_tab = Exploit;
+                });
+                imgui_addons::tab("Misc", selected_tab == Misc, []
+                {
+                    selected_tab = Misc;
+                });
+                imgui_addons::tab("Config", selected_tab == Config, []
+                {
+                    selected_tab = Config;
+                });
+                ImGui::EndTabBar();
+
+                bool overflow = false;
+                ImVec2 window_pos = ImGui::GetWindowPos();
+                ImVec2 window_size = ImGui::GetWindowSize();
+                float window_min = window_pos.x + ImGui::GetCursorPosX();
+                float window_max = window_pos.x + window_size.x;
+                float window_space = window_max - window_min;
+                ImGui::BeginChild("##Child1", {0.5f * window_space - 4 * scale_factor, 0});
+                ModuleManager::get_instance()->apply([window_space, height, &overflow](Module* m)
+                {
+                    if (m->category != selected_tab) return;
+                    ImGui::Dummy({0, 3 * scale_factor});
+                    ImGui::Indent();
+                    ImGui::PushFont(sfui_bold);
+                    ImGui::Text(m->name.c_str());
+                    ImGui::Dummy({0, 4 * scale_factor});
+                    ImGui::PopFont();
+                    ImGui::Unindent();
+                    m->apply([](ConfigValue* c)
+                    {
+                        ImGui::Indent();
+                        c->draw();
+                        ImGui::Unindent();
+                    });
+
+                    if (ImGui::GetCursorPosY() >= 0.75f * height * scale_factor)
+                    {
+                        overflow = true;
+                        ImGui::EndChild();
+                        ImGui::SameLine();
+                        ImGui::BeginChild("##Child2", {0.5f * window_space - 4 * scale_factor, 0});
+                    }
+                });
+                if (!overflow)
+                {
+                    ImGui::EndChild();
+                    ImGui::SameLine();
+                    ImGui::BeginChild("##Child2", {0.5f * window_space - 4 * scale_factor, 0});
+                }
+                ImGui::EndChild();
             }
             ImGui::End();
         }
 
+        // listen to menu key
         if (GetAsyncKeyState(VK_INSERT) & 1)
         {
             draw_imgui = !draw_imgui;
         }
+
+        // draw overlay
+        auto draw_list = ImGui::GetBackgroundDrawList();
+        ModuleManager::get_instance()->apply([draw_list](Module* m)
+        {
+            m->draw_overlay(draw_list);
+        });
     }
 }

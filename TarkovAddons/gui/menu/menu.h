@@ -7,16 +7,9 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_dx12.h"
 
-#define LBUTTON        0x01
-#define RBUTTON        0x02
-#define MBUTTON        0x04    /* NOT contiguous with L & RBUTTON */
-#define XBUTTON1       0x05    /* NOT contiguous with L & RBUTTON */
-#define XBUTTON2       0x06    /* NOT contiguous with L & RBUTTON */
-#define BACK           0x08
-#define RMENU          0xA5
-
 namespace menu
 {
+    float get_scale_factor();
     bool is_active();
     void setup();
     void draw();

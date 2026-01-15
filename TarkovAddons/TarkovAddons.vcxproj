@@ -163,7 +163,16 @@
         <ClCompile Include="util\logger.cpp"/>
     </ItemGroup>
     <ItemGroup>
+        <ClInclude Include="config\ActionRowValue.h"/>
+        <ClInclude Include="config\CheckboxValue.h"/>
+        <ClInclude Include="config\ColorpickerValue.h"/>
+        <ClInclude Include="config\ConfigValue.h"/>
+        <ClInclude Include="config\FloatSliderValue.h"/>
+        <ClInclude Include="config\IntSliderValue.h"/>
+        <ClInclude Include="config\SelectValue.h"/>
+        <ClInclude Include="config\TextboxValue.h"/>
         <ClInclude Include="gui\dxhook\dxhook.h"/>
+        <ClInclude Include="gui\menu\imgui_addons.h"/>
         <ClInclude Include="gui\menu\menu.h"/>
         <ClInclude Include="gui\menu\resources.h"/>
         <ClInclude Include="hooks\hooks.h"/>
@@ -173,6 +182,11 @@
         <ClInclude Include="il2cpp\libil2cpp\il2cpp-blob.h"/>
         <ClInclude Include="il2cpp\libil2cpp\il2cpp-metadata.h"/>
         <ClInclude Include="il2cpp\libil2cpp\il2cpp-runtime-metadata.h"/>
+        <ClInclude Include="module\impl\ConfigModule.h"/>
+        <ClInclude Include="module\impl\WatermarkModule.h"/>
+        <ClInclude Include="module\Module.h"/>
+        <ClInclude Include="module\ModuleCategory.h"/>
+        <ClInclude Include="module\ModuleManager.h"/>
         <ClInclude Include="util\globals.h"/>
         <ClInclude Include="util\scan.h"/>
         <ClInclude Include="util\logger.h"/>

@@ -4,6 +4,7 @@
 #include "gui/dxhook/dxhook.h"
 #include "hooks/hooks.h"
 #include "il2cpp/il2cpp_offsets.h"
+#include "module/ModuleManager.h"
 #include "util/globals.h"
 #include "util/logger.h"
 
@@ -51,6 +52,10 @@ namespace
         logger::info("Hooking Present");
         if (!dxhook::init()) logger::error("Present Hook Failed");
         else logger::info("Hooked Present");
+
+        // init modules
+        logger::info("Loading Modules");
+        ModuleManager::get_instance()->init();
 
         // wait for eject input
         while (true)

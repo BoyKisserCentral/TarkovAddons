@@ -40,64 +40,8 @@ namespace
     UINT bufferCount = 0;
 
     bool is_dx12 = false;
-    UINT g_resize_height = 0;
-    UINT g_resize_width = 0;
     UINT64* g_methods_table = nullptr;
     HWND imgui_window = nullptr;
-    bool is_foreground = false;
-
-    // mouse cursor utility functions
-    void show_mouse_cursor(bool show)
-    {
-        if (show)
-        {
-            while (ShowCursor(TRUE) < 0);
-        }
-        else
-        {
-            while (ShowCursor(FALSE) >= 0);
-        }
-    }
-
-    void handle_mouse_inputs(HWND hWnd, ImGuiIO& io)
-    {
-        if (!menu::is_active())
-            return;
-
-        POINT mousePos;
-        GetCursorPos(&mousePos);
-        ScreenToClient(hWnd, &mousePos);
-        io.MousePos = ImVec2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
-
-        io.MouseDown[0] = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
-        io.MouseDown[1] = (GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0;
-        io.MouseDown[2] = (GetAsyncKeyState(VK_MBUTTON) & 0x8000) != 0;
-    }
-
-    // https://stackoverflow.com/a/15977613
-    WPARAM map_left_right_keys(WPARAM wParam, LPARAM lParam)
-    {
-        WPARAM new_vk;
-        const UINT scancode = (lParam & 0x00ff0000) >> 16;
-        const int extended = (lParam & 0x01000000) != 0;
-
-        switch (wParam)
-        {
-        case VK_SHIFT:
-            new_vk = MapVirtualKey(scancode, MAPVK_VSC_TO_VK_EX);
-            break;
-        case VK_CONTROL:
-            new_vk = extended ? VK_RCONTROL : VK_LCONTROL;
-            break;
-        default:
-            // not a key we map from generic to left/right specialized
-            // just return it.
-            new_vk = wParam;
-            break;
-        }
-
-        return new_vk;
-    }
 }
 
 // yeah imgui is missing this for some reason
@@ -105,80 +49,12 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 LRESULT WINAPI dxhook::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    ImGuiIO& io = ImGui::GetIO();
-
-    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) return true;
-
-    switch (msg)
-    {
-    case WM_ACTIVATE:
-        {
-            if (LOWORD(wParam) == 0)
-            {
-                ClipCursor(nullptr);
-                is_foreground = false;
-                return CallWindowProcW(oWndProc, GetActiveWindow(), msg, wParam, lParam);
-            }
-            is_foreground = true;
-            break;
-        }
-    case WM_MOUSEMOVE:
-        handle_mouse_inputs(hWnd, io);
-        break;
-    case WM_LBUTTONDOWN:
-        if (menu::is_active())
-            io.MouseDown[0] = true;
-        break;
-    case WM_LBUTTONUP:
-        if (menu::is_active())
-            io.MouseDown[0] = false;
-        break;
-    case WM_RBUTTONDOWN:
-        if (menu::is_active())
-            io.MouseDown[1] = true;
-        break;
-    case WM_RBUTTONUP:
-        if (menu::is_active())
-            io.MouseDown[1] = false;
-        break;
-    case WM_MBUTTONDOWN:
-        if (menu::is_active())
-            io.MouseDown[2] = true;
-        break;
-    case WM_MBUTTONUP:
-        if (menu::is_active())
-            io.MouseDown[2] = false;
-        break;
-    case WM_KEYDOWN:
-        if (map_left_right_keys(wParam, lParam) == VK_RSHIFT || menu::is_active() && wParam
-            == VK_ESCAPE)
-        {
-            show_mouse_cursor(!menu::is_active());
-        }
-        break;
-    case WM_SIZE:
-        if (wParam == SIZE_MINIMIZED)
-            return 0;
-        g_resize_width = static_cast<UINT>(LOWORD(lParam));
-        g_resize_height = static_cast<UINT>(HIWORD(lParam));
-        return 0;
-    case WM_SYSCOMMAND:
-        if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
-            return 0;
-        break;
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-    default:
-        break;
-    }
-
     if (!menu::is_active())
     {
         return CallWindowProcW(oWndProc, GetActiveWindow(), msg, wParam, lParam);
     }
-    ClipCursor(nullptr);
-    return DefWindowProcW(GetActiveWindow(), msg, wParam, lParam);
+    ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
+    return true;
 }
 
 bool dxhook::init()

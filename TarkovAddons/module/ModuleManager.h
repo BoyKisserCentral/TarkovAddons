@@ -1,0 +1,63 @@
+﻿#pragma once
+#include <functional>
+
+#include "Module.h"
+#include "impl/ConfigModule.h"
+#include "impl/WatermarkModule.h"
+
+class ModuleManager
+{
+public:
+    void init() const
+    {
+        for (auto module : modules)
+        {
+            static_cast<Module*>(module)->init();
+        }
+    }
+
+    std::vector<PVOID> modules = std::vector<PVOID>();
+
+    void apply(const std::function<void (Module*)>& function) const
+    {
+        for (auto module : modules)
+        {
+            function(static_cast<Module*>(module));
+        }
+    }
+
+    template <typename T>
+    T* module(T* value)
+    {
+        modules.push_back(static_cast<PVOID>(value));
+        return value;
+    }
+
+    std::vector<Module*> get_modules()
+    {
+        auto res = std::vector<Module*>();
+        for (auto module : modules)
+        {
+            res.push_back(static_cast<Module*>(module));
+        }
+        return res;
+    }
+
+    // register modules here
+    WatermarkModule* test_module = module(new WatermarkModule());
+
+    // this has to get instantiated last
+    ConfigModule* config_module = module(new ConfigModule(get_modules()));
+
+    static ModuleManager* get_instance()
+    {
+        if (!instance)
+        {
+            instance = new ModuleManager();
+        }
+        return instance;
+    }
+
+private:
+    static inline ModuleManager* instance = nullptr;
+};
