@@ -4,41 +4,60 @@
 #include "ConfigValue.h"
 #include "../gui/menu/imgui_addons.h"
 
+#pragma pack(push, 1)
 class SelectValue : public ConfigValue
 {
 public:
-    SelectValue(int initial, const std::vector<const char*>& options, const std::string& n) : ConfigValue(
-        this->to_string(initial), n, this->to_string(initial))
+    SelectValue(int initial, const std::vector<const char*>& options, const std::string& n) : ConfigValue(n)
     {
+        this->value_ = initial;
+        this->def_ = initial;
         this->options = options;
-    }
-
-    std::vector<const char*> options;
-
-    std::string to_string(int v)
-    {
-        return std::to_string(v);
-    }
-
-    static int from_string(std::string string)
-    {
-        return std::stoi(string);
-    }
-
-    std::string selected() const
-    {
-        return std::string(this->options[from_string(this->value)]);
-    }
-
-    int get_val()
-    {
-        return this->from_string(this->value);
     }
 
     void draw() override
     {
-        int i = this->from_string(this->value);
-        imgui_addons::select(this->imgui_name, &i, this->options);
-        this->value = this->to_string(i);
+        imgui_addons::select(this->get_imgui_title(), &this->value_, this->options);
+    }
+
+    void set(const std::string& string) override
+    {
+        this->value_ = from_string(string);
+    }
+
+    std::string get() override
+    {
+        return to_string(this->value_);
+    }
+
+    std::string get_default() override
+    {
+        return to_string(this->def_);
+    }
+
+    [[nodiscard]] int get_value() const
+    {
+        return this->value_;
+    }
+
+    std::string get_selected() const
+    {
+        return {this->options[this->value_]};
+    }
+
+private:
+    int value_;
+    int def_;
+    std::vector<const char*> options;
+
+    static std::string to_string(int v)
+    {
+        return std::to_string(v);
+    }
+
+    static int from_string(const std::string& string)
+    {
+        return std::stoi(string);
     }
 };
+#pragma pack(pop)

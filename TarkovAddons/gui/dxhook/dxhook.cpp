@@ -534,6 +534,19 @@ void dxhook::shutdown_imgui()
     if (is_dx12)
     {
         ImGui_ImplDX12_Shutdown();
+    }
+    else
+    {
+        ImGui_ImplDX11_Shutdown();
+    }
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
+    if (oWndProc != nullptr)
+    {
+        SetWindowLongPtr(imgui_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(oWndProc));
+    }
+    if (is_dx12)
+    {
         p_descriptor_heap->Release();
         g_pd3d_srv_desc_heap->Release();
         p_allocator->Release();
@@ -547,11 +560,8 @@ void dxhook::shutdown_imgui()
     }
     else
     {
-        ImGui_ImplDX11_Shutdown();
         main_render_target_view11->Release();
     }
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
 }
 
 void dxhook::draw_imgui(IDXGISwapChain3* p_swap_chain)

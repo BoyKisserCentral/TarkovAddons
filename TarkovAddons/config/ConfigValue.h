@@ -3,26 +3,17 @@
 
 /**
  * Represents a config value of a module and its imgui representation.
- * 
- * @tparam T Value Type
  */
+#pragma pack(push, 1)
 class ConfigValue
 {
 public:
     virtual ~ConfigValue() = default;
 
-    ConfigValue(const std::string& initial, const std::string& name, const std::string& def)
+    explicit ConfigValue(const std::string& name)
     {
-        this->value = initial;
-        this->default_string = def;
-        this->name = name;
+        this->name_ = name;
     }
-
-    std::string value;
-    std::string name;
-    std::string module;
-    std::string default_string;
-    std::string imgui_name;
 
     /**
      * Register with the module
@@ -30,19 +21,24 @@ public:
      */
     void reg(const std::string& mod)
     {
-        this->module = mod;
-        this->imgui_name = this->name + "##" + this->module;
+        this->module_ = mod;
     }
 
-    virtual void draw() = 0; // NOLINT(portability-template-virtual-member-function)
+    virtual void draw() = 0;
 
-    void set(const std::string& string)
+    virtual void set(const std::string& string) = 0;
+
+    virtual std::string get() = 0;
+
+    virtual std::string get_default() = 0;
+
+    std::string get_imgui_title() const
     {
-        this->value = string;
+        return this->name_ + "##" + this->module_;
     }
 
-    std::string get()
-    {
-        return this->value;
-    }
+private:
+    std::string name_;
+    std::string module_;
 };
+#pragma pack(pop)

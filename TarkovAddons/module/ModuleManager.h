@@ -33,7 +33,7 @@ public:
         return value;
     }
 
-    std::vector<Module*> get_modules()
+    std::vector<Module*> get_modules() const
     {
         auto res = std::vector<Module*>();
         for (auto module : modules)

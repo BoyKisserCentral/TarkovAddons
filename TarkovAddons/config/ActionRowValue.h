@@ -4,25 +4,42 @@
 #include "CheckboxValue.h"
 #include "ConfigValue.h"
 
+#pragma pack(push, 1)
 class ActionRowValue : public ConfigValue
 {
 public:
-    ActionRowValue(const std::function<void ()>& action, const std::string& n, bool sameline = false) : ConfigValue(
-        "", n, "")
+    ActionRowValue(const std::function<void ()>& action, const std::string& n,
+                   const bool sameline = false) : ConfigValue(n)
     {
-        this->action = action;
-        this->sameline = sameline;
+        this->action_ = action;
+        this->sameline_ = sameline;
     }
-
-    std::function<void ()> action;
-    bool sameline;
 
     void draw() override
     {
-        if (sameline) ImGui::SameLine();
-        if (ImGui::Button(this->imgui_name.c_str()))
+        if (this->sameline_) ImGui::SameLine();
+        if (ImGui::Button(this->get_imgui_title().c_str()))
         {
-            action();
+            this->action_();
         }
     }
+
+    void set(const std::string& string) override
+    {
+    }
+
+    std::string get() override
+    {
+        return "";
+    }
+
+    std::string get_default() override
+    {
+        return "";
+    }
+
+private:
+    std::function<void ()> action_;
+    bool sameline_;
 };
+#pragma pack(pop)

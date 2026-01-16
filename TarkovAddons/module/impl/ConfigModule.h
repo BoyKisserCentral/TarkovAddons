@@ -26,12 +26,12 @@ public:
 
     ActionRowValue* load = conf(new ActionRowValue([&]
     {
-        load_config(config->selected());
+        load_config(config->get_selected());
     }, "Load"));
 
     ActionRowValue* save = conf(new ActionRowValue([&]
     {
-        save_config(config->selected());
+        save_config(config->get_selected());
     }, "Save", true));
 
     void draw_overlay(ImDrawList* draw_list) override
@@ -40,14 +40,14 @@ public:
 
     void init() override
     {
-        load_config(config->selected());
+        load_config(config->get_selected());
     }
 
     static void load_config(const std::string& config)
     {
         logger::info("Loading Config " + config);
 
-        // try create folder
+        // try to create folder
         char* p_value;
         size_t len;
         errno_t _ = _dupenv_s(&p_value, &len, "APPDATA");
@@ -79,7 +79,7 @@ public:
         {
             module->apply([values](ConfigValue* c)
             {
-                c->set(values.at(c->imgui_name));
+                c->set(values.at(c->get_imgui_title()));
             });
         }
     }
@@ -88,7 +88,7 @@ public:
     {
         logger::info("Saving Config " + config);
 
-        // try create folder
+        // try to create folder
         char* p_value;
         size_t len;
         errno_t _ = _dupenv_s(&p_value, &len, "APPDATA");
@@ -101,7 +101,7 @@ public:
         {
             module->apply([&value](ConfigValue* c)
             {
-                value.append(c->imgui_name);
+                value.append(c->get_imgui_title());
                 value.append(";");
                 value.append(c->get());
                 value.append(";");
@@ -121,15 +121,15 @@ public:
         {
             module->apply([&value](ConfigValue* c)
             {
-                value.append(c->imgui_name);
+                value.append(c->get_imgui_title());
                 value.append(";");
-                value.append(c->default_string);
+                value.append(c->get_default());
                 value.append(";");
             });
         }
 
         // write file
-        // try create folder
+        // try to create folder
         char* p_value;
         size_t len;
         errno_t _ = _dupenv_s(&p_value, &len, "APPDATA");

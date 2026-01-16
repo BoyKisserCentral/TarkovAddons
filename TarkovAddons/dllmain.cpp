@@ -68,14 +68,14 @@ namespace
             }
         }
 
-        // TODO: fix eject
-        dxhook::shutdown();
         logger::info("Unhooked Present");
-        dxhook::shutdown_imgui();
+        dxhook::shutdown();
         logger::info("Shutdown ImGui");
-        hooks::unhook_all();
+        dxhook::shutdown_imgui();
         logger::info("Unhooked All");
+        hooks::unhook_all();
         if (globals::console) hide_console();
+        // TODO: link back into ldr if unlinked so we can eject
         FreeLibraryAndExitThread(this_module, 0);
     }
 }

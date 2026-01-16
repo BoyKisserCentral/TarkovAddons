@@ -19,8 +19,8 @@ public:
 
     void draw_overlay(ImDrawList* draw_list) override
     {
-        if (enabled->get_val())
-            draw_list->AddText({10, 10}, ImGui::GetColorU32(color->get_val()), text->get_val().c_str());
+        if (enabled->get_value())
+            draw_list->AddText({10, 10}, ImGui::GetColorU32(color->get_value()), text->get().c_str());
     }
 
     void init() override
