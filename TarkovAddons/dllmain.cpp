@@ -3,7 +3,7 @@
 
 #include "gui/dxhook/dxhook.h"
 #include "hooks/hooks.h"
-#include "il2cpp/il2cpp_offsets.h"
+#include "il2cpp/unity.h"
 #include "module/ModuleManager.h"
 #include "util/globals.h"
 #include "util/logger.h"
@@ -47,6 +47,11 @@ namespace
         {
             Sleep(50);
         }
+
+        // init unity interop
+        logger::info("Loading Unity");
+        unity::init();
+        logger::info("Unity Loaded");
 
         // dxhook and menu
         logger::info("Hooking Present");

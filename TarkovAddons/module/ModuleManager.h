@@ -3,7 +3,11 @@
 
 #include "Module.h"
 #include "impl/ConfigModule.h"
+#include "impl/TestModule.h"
 #include "impl/WatermarkModule.h"
+
+class ModuleManager;
+inline static ModuleManager* instance = nullptr;
 
 class ModuleManager
 {
@@ -43,8 +47,11 @@ public:
         return res;
     }
 
+    // test module
+    TestModule* test_module = module(new TestModule());
+
     // register modules here
-    WatermarkModule* test_module = module(new WatermarkModule());
+    WatermarkModule* watermark_module = module(new WatermarkModule());
 
     // this has to get instantiated last
     ConfigModule* config_module = module(new ConfigModule(get_modules()));
@@ -57,7 +64,4 @@ public:
         }
         return instance;
     }
-
-private:
-    static inline ModuleManager* instance = nullptr;
 };

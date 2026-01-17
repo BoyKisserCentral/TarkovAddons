@@ -6,8 +6,8 @@
 
 namespace il2cpp_offsets
 {
-    HMODULE module_base;
-    DWORD module_size;
+    inline HMODULE module_base;
+    inline DWORD module_size;
 
     // direct pattern
 #define PATTERN(pattern)  reinterpret_cast<PVOID>(scan::find_pattern(pattern, reinterpret_cast<char*>(module_base), module_size))
@@ -21,217 +21,217 @@ namespace il2cpp_offsets
     // worse case scenario, static offset from the exported address to skip the protection
 #define IMPORT_OFFSET(name, offset) reinterpret_cast<PVOID>(scan::import(name) + (offset))
 
-    PVOID il2cpp_init;
-    PVOID il2cpp_init_utf16;
-    PVOID il2cpp_shutdown;
-    PVOID il2cpp_set_config_dir;
-    PVOID il2cpp_set_data_dir;
-    PVOID il2cpp_set_temp_dir;
-    PVOID il2cpp_set_commandline_arguments;
-    PVOID il2cpp_set_commandline_arguments_utf16;
-    PVOID il2cpp_set_config_utf16;
-    PVOID il2cpp_set_config;
-    PVOID il2cpp_set_memory_callbacks;
-    PVOID il2cpp_get_corlib;
-    PVOID il2cpp_add_internal_call;
-    PVOID il2cpp_resolve_icall;
-    PVOID il2cpp_alloc;
-    PVOID il2cpp_free;
+    static inline PVOID il2cpp_init;
+    static inline PVOID il2cpp_init_utf16;
+    static inline PVOID il2cpp_shutdown;
+    static inline PVOID il2cpp_set_config_dir;
+    static inline PVOID il2cpp_set_data_dir;
+    static inline PVOID il2cpp_set_temp_dir;
+    static inline PVOID il2cpp_set_commandline_arguments;
+    static inline PVOID il2cpp_set_commandline_arguments_utf16;
+    static inline PVOID il2cpp_set_config_utf16;
+    static inline PVOID il2cpp_set_config;
+    static inline PVOID il2cpp_set_memory_callbacks;
+    static inline PVOID il2cpp_get_corlib;
+    static inline PVOID il2cpp_add_internal_call;
+    static inline PVOID il2cpp_resolve_icall;
+    static inline PVOID il2cpp_alloc;
+    static inline PVOID il2cpp_free;
 
     // array
-    PVOID il2cpp_array_class_get;
-    PVOID il2cpp_array_get_byte_length;
-    PVOID il2cpp_array_new;
-    PVOID il2cpp_array_new_specific;
-    PVOID il2cpp_array_new_full;
-    PVOID il2cpp_bounded_array_class_get;
+    static inline PVOID il2cpp_array_class_get;
+    static inline PVOID il2cpp_array_get_byte_length;
+    static inline PVOID il2cpp_array_new;
+    static inline PVOID il2cpp_array_new_specific;
+    static inline PVOID il2cpp_array_new_full;
+    static inline PVOID il2cpp_bounded_array_class_get;
 
     // assembly
-    PVOID il2cpp_assembly_get_image;
+    static inline PVOID il2cpp_assembly_get_image;
 
     // class
-    PVOID il2cpp_class_enum_basetype;
-    PVOID il2cpp_class_is_assignable_from;
-    PVOID il2cpp_class_is_subclass_of;
-    PVOID il2cpp_class_has_parent;
-    PVOID il2cpp_class_from_il2cpp_type;
-    PVOID il2cpp_class_from_name;
-    PVOID il2cpp_class_from_system_type;
-    PVOID il2cpp_class_get_element_class;
-    PVOID il2cpp_class_get_events;
-    PVOID il2cpp_class_get_fields;
-    PVOID il2cpp_class_get_nested_types;
-    PVOID il2cpp_class_get_interfaces;
-    PVOID il2cpp_class_get_properties;
-    PVOID il2cpp_class_get_property_from_name;
-    PVOID il2cpp_class_get_field_from_name;
-    PVOID il2cpp_class_get_methods;
-    PVOID il2cpp_class_get_method_from_name;
-    PVOID il2cpp_class_value_size;
-    PVOID il2cpp_class_is_blittable;
-    PVOID il2cpp_class_get_flags;
-    PVOID il2cpp_class_is_abstract;
-    PVOID il2cpp_class_is_interface;
-    PVOID il2cpp_class_array_element_size;
-    PVOID il2cpp_class_from_type;
-    PVOID il2cpp_class_get_type_token;
-    PVOID il2cpp_class_has_attribute;
-    PVOID il2cpp_class_has_references;
-    PVOID il2cpp_class_is_enum;
-    PVOID il2cpp_class_get_image;
-    PVOID il2cpp_class_get_assemblyname;
-    PVOID il2cpp_class_get_rank;
+    static inline PVOID il2cpp_class_enum_basetype;
+    static inline PVOID il2cpp_class_is_assignable_from;
+    static inline PVOID il2cpp_class_is_subclass_of;
+    static inline PVOID il2cpp_class_has_parent;
+    static inline PVOID il2cpp_class_from_il2cpp_type;
+    static inline PVOID il2cpp_class_from_name;
+    static inline PVOID il2cpp_class_from_system_type;
+    static inline PVOID il2cpp_class_get_element_class;
+    static inline PVOID il2cpp_class_get_events;
+    static inline PVOID il2cpp_class_get_fields;
+    static inline PVOID il2cpp_class_get_nested_types;
+    static inline PVOID il2cpp_class_get_interfaces;
+    static inline PVOID il2cpp_class_get_properties;
+    static inline PVOID il2cpp_class_get_property_from_name;
+    static inline PVOID il2cpp_class_get_field_from_name;
+    static inline PVOID il2cpp_class_get_methods;
+    static inline PVOID il2cpp_class_get_method_from_name;
+    static inline PVOID il2cpp_class_value_size;
+    static inline PVOID il2cpp_class_is_blittable;
+    static inline PVOID il2cpp_class_get_flags;
+    static inline PVOID il2cpp_class_is_abstract;
+    static inline PVOID il2cpp_class_is_interface;
+    static inline PVOID il2cpp_class_array_element_size;
+    static inline PVOID il2cpp_class_from_type;
+    static inline PVOID il2cpp_class_get_type_token;
+    static inline PVOID il2cpp_class_has_attribute;
+    static inline PVOID il2cpp_class_has_references;
+    static inline PVOID il2cpp_class_is_enum;
+    static inline PVOID il2cpp_class_get_image;
+    static inline PVOID il2cpp_class_get_assemblyname;
+    static inline PVOID il2cpp_class_get_rank;
 
     // bitmap
-    PVOID il2cpp_class_get_bitmap_size;
-    PVOID il2cpp_class_get_bitmap;
+    static inline PVOID il2cpp_class_get_bitmap_size;
+    static inline PVOID il2cpp_class_get_bitmap;
 
     // stats
-    PVOID il2cpp_stats_dump_to_file;
-    PVOID il2cpp_stats_get_value;
+    static inline PVOID il2cpp_stats_dump_to_file;
+    static inline PVOID il2cpp_stats_get_value;
 
     // domain
-    PVOID il2cpp_domain_get;
-    PVOID il2cpp_domain_assembly_open;
-    PVOID il2cpp_domain_get_assemblies;
+    static inline PVOID il2cpp_domain_get;
+    static inline PVOID il2cpp_domain_assembly_open;
+    static inline PVOID il2cpp_domain_get_assemblies;
 
     // exception
-    PVOID il2cpp_raise_exception;
-    PVOID il2cpp_exception_from_name_msg;
-    PVOID il2cpp_get_exception_argument_null;
-    PVOID il2cpp_format_exception;
-    PVOID il2cpp_format_stack_trace;
-    PVOID il2cpp_unhandled_exception;
+    static inline PVOID il2cpp_raise_exception;
+    static inline PVOID il2cpp_exception_from_name_msg;
+    static inline PVOID il2cpp_get_exception_argument_null;
+    static inline PVOID il2cpp_format_exception;
+    static inline PVOID il2cpp_format_stack_trace;
+    static inline PVOID il2cpp_unhandled_exception;
 
     // field
-    PVOID il2cpp_field_get_offset;
-    PVOID il2cpp_field_get_value;
-    PVOID il2cpp_field_get_value_object;
-    PVOID il2cpp_field_has_attribute;
-    PVOID il2cpp_field_set_value;
-    PVOID il2cpp_field_static_get_value;
-    PVOID il2cpp_field_static_set_value;
-    PVOID il2cpp_field_set_value_object;
+    static inline PVOID il2cpp_field_get_offset;
+    static inline PVOID il2cpp_field_get_value;
+    static inline PVOID il2cpp_field_get_value_object;
+    static inline PVOID il2cpp_field_has_attribute;
+    static inline PVOID il2cpp_field_set_value;
+    static inline PVOID il2cpp_field_static_get_value;
+    static inline PVOID il2cpp_field_static_set_value;
+    static inline PVOID il2cpp_field_set_value_object;
 
     // gc
-    PVOID il2cpp_gc_collect;
-    PVOID il2cpp_gc_collect_a_little;
-    PVOID il2cpp_gc_disable;
-    PVOID il2cpp_gc_enable;
-    PVOID il2cpp_gc_is_disabled;
-    PVOID il2cpp_gc_get_used_size;
-    PVOID il2cpp_gc_get_heap_size;
-    PVOID il2cpp_gc_wbarrier_set_field;
+    static inline PVOID il2cpp_gc_collect;
+    static inline PVOID il2cpp_gc_collect_a_little;
+    static inline PVOID il2cpp_gc_disable;
+    static inline PVOID il2cpp_gc_enable;
+    static inline PVOID il2cpp_gc_is_disabled;
+    static inline PVOID il2cpp_gc_get_used_size;
+    static inline PVOID il2cpp_gc_get_heap_size;
+    static inline PVOID il2cpp_gc_wbarrier_set_field;
 
     // gchandle
-    PVOID il2cpp_gchandle_new;
-    PVOID il2cpp_gchandle_new_weakref;
-    PVOID il2cpp_gchandle_get_target;
-    PVOID il2cpp_gchandle_free;
+    static inline PVOID il2cpp_gchandle_new;
+    static inline PVOID il2cpp_gchandle_new_weakref;
+    static inline PVOID il2cpp_gchandle_get_target;
+    static inline PVOID il2cpp_gchandle_free;
 
     // liveness
-    PVOID il2cpp_unity_liveness_calculation_from_root;
-    PVOID il2cpp_unity_liveness_calculation_from_statics;
+    static inline PVOID il2cpp_unity_liveness_calculation_from_root;
+    static inline PVOID il2cpp_unity_liveness_calculation_from_statics;
 
     // method
-    PVOID il2cpp_method_get_object;
-    PVOID il2cpp_method_is_generic;
-    PVOID il2cpp_method_is_inflated;
-    PVOID il2cpp_method_is_instance;
-    PVOID il2cpp_method_get_param;
-    PVOID il2cpp_method_has_attribute;
-    PVOID il2cpp_method_get_param_name;
+    static inline PVOID il2cpp_method_get_object;
+    static inline PVOID il2cpp_method_is_generic;
+    static inline PVOID il2cpp_method_is_inflated;
+    static inline PVOID il2cpp_method_is_instance;
+    static inline PVOID il2cpp_method_get_param;
+    static inline PVOID il2cpp_method_has_attribute;
+    static inline PVOID il2cpp_method_get_param_name;
 
     // property
-    PVOID il2cpp_property_get_flags;
-    PVOID il2cpp_property_get_parent;
+    static inline PVOID il2cpp_property_get_flags;
+    static inline PVOID il2cpp_property_get_parent;
 
     // object
-    PVOID il2cpp_object_get_class;
-    PVOID il2cpp_object_get_size;
-    PVOID il2cpp_object_get_virtual_method;
-    PVOID il2cpp_object_new;
-    PVOID il2cpp_value_box;
+    static inline PVOID il2cpp_object_get_class;
+    static inline PVOID il2cpp_object_get_size;
+    static inline PVOID il2cpp_object_get_virtual_method;
+    static inline PVOID il2cpp_object_new;
+    static inline PVOID il2cpp_value_box;
 
     // monitor
-    PVOID il2cpp_monitor_enter;
-    PVOID il2cpp_monitor_try_enter;
-    PVOID il2cpp_monitor_exit;
-    PVOID il2cpp_monitor_pulse;
-    PVOID il2cpp_monitor_pulse_all;
-    PVOID il2cpp_monitor_wait;
-    PVOID il2cpp_monitor_try_wait;
+    static inline PVOID il2cpp_monitor_enter;
+    static inline PVOID il2cpp_monitor_try_enter;
+    static inline PVOID il2cpp_monitor_exit;
+    static inline PVOID il2cpp_monitor_pulse;
+    static inline PVOID il2cpp_monitor_pulse_all;
+    static inline PVOID il2cpp_monitor_wait;
+    static inline PVOID il2cpp_monitor_try_wait;
 
     // runtime
-    PVOID il2cpp_runtime_invoke;
-    PVOID il2cpp_runtime_invoke_convert_args;
-    PVOID il2cpp_runtime_class_init;
-    PVOID il2cpp_runtime_object_init;
-    PVOID il2cpp_runtime_object_init_exception;
-    PVOID il2cpp_runtime_unhandled_exception_policy_set;
+    static inline PVOID il2cpp_runtime_invoke;
+    static inline PVOID il2cpp_runtime_invoke_convert_args;
+    static inline PVOID il2cpp_runtime_class_init;
+    static inline PVOID il2cpp_runtime_object_init;
+    static inline PVOID il2cpp_runtime_object_init_exception;
+    static inline PVOID il2cpp_runtime_unhandled_exception_policy_set;
 
     // string
-    PVOID il2cpp_string_new;
-    PVOID il2cpp_string_new_len;
-    PVOID il2cpp_string_new_utf16;
-    PVOID il2cpp_string_new_wrapper;
-    PVOID il2cpp_string_intern;
-    PVOID il2cpp_string_is_interned;
+    static inline PVOID il2cpp_string_new;
+    static inline PVOID il2cpp_string_new_len;
+    static inline PVOID il2cpp_string_new_utf16;
+    static inline PVOID il2cpp_string_new_wrapper;
+    static inline PVOID il2cpp_string_intern;
+    static inline PVOID il2cpp_string_is_interned;
 
     // thread
-    PVOID il2cpp_thread_current;
-    PVOID il2cpp_thread_attach;
-    PVOID il2cpp_thread_detach;
-    PVOID il2cpp_thread_get_all_attached_threads;
-    PVOID il2cpp_is_vm_thread;
+    static inline PVOID il2cpp_thread_current;
+    static inline PVOID il2cpp_thread_attach;
+    static inline PVOID il2cpp_thread_detach;
+    static inline PVOID il2cpp_thread_get_all_attached_threads;
+    static inline PVOID il2cpp_is_vm_thread;
 
     // stacktrace
-    PVOID il2cpp_current_thread_walk_frame_stack;
-    PVOID il2cpp_thread_walk_frame_stack;
-    PVOID il2cpp_current_thread_get_top_frame;
-    PVOID il2cpp_thread_get_top_frame;
-    PVOID il2cpp_current_thread_get_frame_at;
-    PVOID il2cpp_thread_get_frame_at;
-    PVOID il2cpp_current_thread_get_stack_depth;
-    PVOID il2cpp_thread_get_stack_depth;
+    static inline PVOID il2cpp_current_thread_walk_frame_stack;
+    static inline PVOID il2cpp_thread_walk_frame_stack;
+    static inline PVOID il2cpp_current_thread_get_top_frame;
+    static inline PVOID il2cpp_thread_get_top_frame;
+    static inline PVOID il2cpp_current_thread_get_frame_at;
+    static inline PVOID il2cpp_thread_get_frame_at;
+    static inline PVOID il2cpp_current_thread_get_stack_depth;
+    static inline PVOID il2cpp_thread_get_stack_depth;
 
     // type
-    PVOID il2cpp_type_get_object;
-    PVOID il2cpp_type_get_type;
-    PVOID il2cpp_type_get_class_or_element_class;
-    PVOID il2cpp_type_get_name;
-    PVOID il2cpp_type_is_byref;
-    PVOID il2cpp_type_get_attrs;
-    PVOID il2cpp_type_equals;
-    PVOID il2cpp_type_get_assembly_qualified_name;
+    static inline PVOID il2cpp_type_get_object;
+    static inline PVOID il2cpp_type_get_type;
+    static inline PVOID il2cpp_type_get_class_or_element_class;
+    static inline PVOID il2cpp_type_get_name;
+    static inline PVOID il2cpp_type_is_byref;
+    static inline PVOID il2cpp_type_get_attrs;
+    static inline PVOID il2cpp_type_equals;
+    static inline PVOID il2cpp_type_get_assembly_qualified_name;
 
     // image
-    PVOID il2cpp_image_get_name;
-    PVOID il2cpp_image_get_filename;
-    PVOID il2cpp_image_get_entry_point;
-    PVOID il2cpp_image_get_class;
+    static inline PVOID il2cpp_image_get_name;
+    static inline PVOID il2cpp_image_get_filename;
+    static inline PVOID il2cpp_image_get_entry_point;
+    static inline PVOID il2cpp_image_get_class;
 
     // memory information
-    PVOID il2cpp_capture_memory_snapshot;
-    PVOID il2cpp_free_captured_memory_snapshot;
-    PVOID il2cpp_set_find_plugin_callback;
+    static inline PVOID il2cpp_capture_memory_snapshot;
+    static inline PVOID il2cpp_free_captured_memory_snapshot;
+    static inline PVOID il2cpp_set_find_plugin_callback;
 
     // logging
-    PVOID il2cpp_register_log_callback;
+    static inline PVOID il2cpp_register_log_callback;
 
     // debugger
-    PVOID il2cpp_debugger_set_agent_options;
+    static inline PVOID il2cpp_debugger_set_agent_options;
 
     // TLS module
-    PVOID il2cpp_unity_install_unitytls_interface;
+    static inline PVOID il2cpp_unity_install_unitytls_interface;
 
     // custom attributes
-    PVOID il2cpp_custom_attrs_from_class;
-    PVOID il2cpp_custom_attrs_from_method;
-    PVOID il2cpp_custom_attrs_get_attr;
-    PVOID il2cpp_custom_attrs_has_attr;
-    PVOID il2cpp_custom_attrs_construct;
-    PVOID il2cpp_custom_attrs_free;
+    static inline PVOID il2cpp_custom_attrs_from_class;
+    static inline PVOID il2cpp_custom_attrs_from_method;
+    static inline PVOID il2cpp_custom_attrs_get_attr;
+    static inline PVOID il2cpp_custom_attrs_has_attr;
+    static inline PVOID il2cpp_custom_attrs_construct;
+    static inline PVOID il2cpp_custom_attrs_free;
 
     inline void init()
     {

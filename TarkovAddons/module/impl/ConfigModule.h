@@ -79,7 +79,9 @@ public:
         {
             module->apply([values](ConfigValue* c)
             {
-                c->set(values.at(c->get_imgui_title()));
+                auto iter = values.find(c->get_imgui_title());
+                if (iter == values.end()) c->set(c->get_default());
+                else c->set(values.at(c->get_imgui_title()));
             });
         }
     }
