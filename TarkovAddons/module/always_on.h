@@ -14,10 +14,7 @@ namespace always_on
     {
         if (location != nullptr)
         {
-            const Il2CppClass* location_class = il2utils::resolve_class_nested(
-                il2utils::resolve_class(
-                    assembly_csharp, "JsonType", "LocationSettings"), "Location");
-            auto location_instance = new Il2CppObjectInstance(location_class, location);
+            auto location_instance = new Il2CppObjectInstance(location);
             // force offline raid
             location_instance->set_field("ForceOnlineRaidInPVE", false);
             location_instance->set_field("ForceOfflineRaidInPVE", true);

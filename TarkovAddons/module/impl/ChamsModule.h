@@ -49,20 +49,18 @@ public:
         // no chams outside of raid
         if (!game_state::is_in_raid) return;
 
-        const auto game_world_instance = new Il2CppObjectInstance(game_world_class, game_world);
-        Il2CppObjectInstance* main_player = Il2CppObjectInstance::create(game_world_class->image, "EFT", "Player",
-                                                                         game_world_instance->get_field<Il2CppObject*>(
-                                                                             "MainPlayer"));
+        const auto game_world_instance = new Il2CppObjectInstance(game_world);
+        auto main_player_object = game_world_instance->get_field<Il2CppObject*>("MainPlayer");
 
         // if player is not loaded yet
-        if (main_player->get_instance() == nullptr) return;
+        if (main_player_object == nullptr) return;
+
+        const auto main_player = new Il2CppObjectInstance(main_player_object);
 
         const Il2CppImage* unity_image = il2utils::resolve_image("UnityEngine.CoreModule.dll");
 
         const auto get_profile = main_player->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Profile", 0);
-        Il2CppObjectInstance* main_profile = Il2CppObjectInstance::create(
-            game_world_class->image, "EFT", "Profile",
-            get_profile(main_player->get_instance()));
+        auto main_profile = new Il2CppObjectInstance(get_profile(main_player->get_instance()));
 
         const std::string main_nickname = eft_api::to_english(il2utils::conv_wstring(
             main_profile->get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
@@ -89,8 +87,7 @@ public:
                 if (renderer == nullptr) continue;
                 const auto renderer_instance = new Il2CppObjectInstance(renderer);
 
-                Il2CppObjectInstance* material_instance = Il2CppObjectInstance::create(
-                    unity_image, "UnityEngine", "Material",
+                auto material_instance = new Il2CppObjectInstance(
                     renderer_instance->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_material", 0)(
                         renderer_instance->get_instance()));
 
@@ -150,14 +147,12 @@ public:
 
             for (size_t i = 0; i < alive_players->max_length; ++i)
             {
-                Il2CppObjectInstance* player_instance = Il2CppObjectInstance::create(
-                    game_world_class->image, "EFT", "Player",
-                    reinterpret_cast<Il2CppObject**>(&alive_players->data)[i]);
+                Il2CppObject* player_object =
+                    reinterpret_cast<Il2CppObject**>(&alive_players->data)[i];
+                if (!player_object) continue;
+                const auto player_instance = new Il2CppObjectInstance(player_object);
 
-                if (!player_instance->get_instance()) continue;
-
-                Il2CppObjectInstance* profile_instance = Il2CppObjectInstance::create(
-                    game_world_class->image, "EFT", "Profile", get_profile(player_instance->get_instance()));
+                auto profile_instance = new Il2CppObjectInstance(get_profile(player_instance->get_instance()));
 
                 std::string nickname = eft_api::to_english(il2utils::conv_wstring(
                     profile_instance->get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
@@ -175,7 +170,8 @@ public:
                 // skip already processed players
                 if (applied_players.contains(Hash::get(nickname.c_str()))) continue;
 
-                Il2CppObjectInstance* player_body = Il2CppObjectInstance::create(
+                // explicit type required
+                auto player_body = new Il2CppObjectInstance(
                     game_world_class->image, "EFT", "PlayerBody",
                     player_instance->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_PlayerBody", 0)(
                         player_instance->get_instance()));
@@ -184,8 +180,7 @@ public:
 
                 for (int j = 0; j < body_skins->m_i_count; ++j)
                 {
-                    Il2CppObjectInstance* lodded_skin = Il2CppObjectInstance::create(
-                        game_world_class->image, "EFT.Visual", "LoddedSkin", body_skins->get_value_by_index(j));
+                    auto lodded_skin = new Il2CppObjectInstance(body_skins->get_value_by_index(j));
 
                     const auto lods_array = lodded_skin->get_field<Il2CppArray*>("_lods");
                     for (size_t k = 0; k < lods_array->max_length; ++k)
@@ -198,8 +193,7 @@ public:
                                 "get_SkinnedMeshRenderer", 0)(abstract_skin_instance->get_instance())
                         );
 
-                        Il2CppObjectInstance* material_instance = Il2CppObjectInstance::create(
-                            unity_image, "UnityEngine", "Material",
+                        auto material_instance = new Il2CppObjectInstance(
                             skinned_mesh_renderer->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_material", 0)(
                                 skinned_mesh_renderer->get_instance()));
 

@@ -2,26 +2,45 @@
 #include "libil2cpp/il2cpp-class-internals.h"
 #include "il2utils.h"
 
+/**
+ * Represents an instance of an il2cpp object and provides interfaces for it
+ */
 class Il2CppObjectInstance
 {
 public:
-    static Il2CppObjectInstance* create(const Il2CppImage* image, const char* namespaze, const char* name,
-                                        Il2CppObject* instance)
-    {
-        const Il2CppClass* clazz = il2utils::resolve_class(image, namespaze, name);
-        return new Il2CppObjectInstance(clazz, instance);
-    }
-
+    /**
+     * Should be used in most cases, automatically sets the class
+     * @param instance object instance
+     */
     explicit Il2CppObjectInstance(Il2CppObject* instance)
     {
         this->clazz_ = instance->klass;
         this->instance_ = instance;
     }
 
+    /**
+     * Explicitly declare the class
+     * @param clazz il2cpp class
+     * @param instance object instance
+     */
     Il2CppObjectInstance(const Il2CppClass* clazz, Il2CppObject* instance)
     {
         this->clazz_ = clazz;
         this->instance_ = instance;
+    }
+
+    /**
+     * Resolve the class
+     * @param image il2cpp image
+     * @param namespaze namespce
+     * @param name class name
+     * @param instance object instance
+     */
+    Il2CppObjectInstance(const Il2CppImage* image, const char* namespaze, const char* name,
+                         Il2CppObject* instance)
+    {
+        clazz_ = il2utils::resolve_class(image, namespaze, name);
+        instance_ = instance;
     }
 
     template <typename T>

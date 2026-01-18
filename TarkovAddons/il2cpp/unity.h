@@ -414,25 +414,25 @@ namespace unity
 
     inline int camera_pixel_height(Il2CppObject* camera_inst)
     {
-        const auto inst = new Il2CppObjectInstance(camera, camera_inst);
+        const auto inst = new Il2CppObjectInstance(camera_inst);
         return inst->get_method<int(*)(Il2CppObject*)>("get_pixelHeight", 0)(camera_inst);
     }
 
     inline int camera_pixel_width(Il2CppObject* camera_inst)
     {
-        const auto inst = new Il2CppObjectInstance(camera, camera_inst);
+        const auto inst = new Il2CppObjectInstance(camera_inst);
         return inst->get_method<int(*)(Il2CppObject*)>("get_pixelWidth", 0)(camera_inst);
     }
 
     inline float camera_aspect(Il2CppObject* camera_inst)
     {
-        const auto inst = new Il2CppObjectInstance(camera, camera_inst);
+        const auto inst = new Il2CppObjectInstance(camera_inst);
         return inst->get_method<float(*)(Il2CppObject*)>("get_aspect", 0)(camera_inst);
     }
 
     inline float camera_fov(Il2CppObject* camera_inst)
     {
-        const auto inst = new Il2CppObjectInstance(camera, camera_inst);
+        const auto inst = new Il2CppObjectInstance(camera_inst);
         return inst->get_method<float(*)(Il2CppObject*)>("get_fieldOfView", 0)(camera_inst);
     }
 

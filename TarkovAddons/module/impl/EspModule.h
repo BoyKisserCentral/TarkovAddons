@@ -182,22 +182,19 @@ public:
         // no esp outside of raid
         if (!game_state::is_in_raid) return;
 
-        const auto game_world_instance = new Il2CppObjectInstance(game_world_class, game_world);
-        Il2CppObjectInstance* main_player = Il2CppObjectInstance::create(game_world_class->image, "EFT", "Player",
-                                                                         game_world_instance->get_field<Il2CppObject*>(
-                                                                             "MainPlayer"));
+        const auto game_world_instance = new Il2CppObjectInstance(game_world);
+        auto main_player_object = game_world_instance->get_field<Il2CppObject*>("MainPlayer");
 
         // if player is not loaded yet
-        if (main_player->get_instance() == nullptr) return;
+        if (main_player_object == nullptr) return;
 
+        const auto main_player = new Il2CppObjectInstance(main_player_object);
         const auto main_player_game_object = unity::component_get_game_object(main_player->get_instance());
         const auto main_player_transform = unity::gameobject_get_transform(main_player_game_object);
         my_pos = unity::transform_get_pos(main_player_transform);
 
         const auto get_profile = main_player->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Profile", 0);
-        Il2CppObjectInstance* main_profile = Il2CppObjectInstance::create(
-            game_world_class->image, "EFT", "Profile",
-            get_profile(main_player->get_instance()));
+        const auto main_profile = new Il2CppObjectInstance(get_profile(main_player->get_instance()));
 
         const std::string main_nickname = eft_api::to_english(il2utils::conv_wstring(
             main_profile->get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
@@ -206,12 +203,11 @@ public:
         // extract esp
         if (extracts->get_value())
         {
-            Il2CppObjectInstance* exfiltration_controller = Il2CppObjectInstance::create(
-                game_world_class->image, "CommonAssets.Scripts.Game", "ExfiltrationController",
+            const auto exfiltration_controller = new Il2CppObjectInstance(
                 game_world_instance->get_field<Il2CppObject*>(
                     "<ExfiltrationController>k__BackingField"));
 
-            auto exfils = exfiltration_controller->get_method<Il2CppArray*(
+            const auto exfils = exfiltration_controller->get_method<Il2CppArray*(
                 *)(Il2CppObject*, Il2CppObject*)>("EligiblePoints", 1)(exfiltration_controller->get_instance(),
                                                                        main_profile->get_instance());
 
@@ -220,16 +216,14 @@ public:
             {
                 Il2CppObject* exfil = reinterpret_cast<Il2CppObject**>(&exfils->data)[i];
                 if (!exfil) continue;
-                Il2CppObjectInstance* exfiltration_point = Il2CppObjectInstance::create(
-                    game_world_class->image, "EFT.Interactive", "ExfiltrationPoint", exfil);
+                const auto exfiltration_point = new Il2CppObjectInstance(exfil);
 
-                int status = exfiltration_point->get_field<int>("_status");
+                const int status = exfiltration_point->get_field<int>("_status");
 
-                Il2CppObjectInstance* exfil_settings = Il2CppObjectInstance::create(
-                    game_world_class->image, "EFT.Interactive", "ExitTriggerSettings",
-                    exfiltration_point->get_field<Il2CppObject*>("Settings"));
+                const auto exfil_settings = new
+                    Il2CppObjectInstance(exfiltration_point->get_field<Il2CppObject*>("Settings"));
 
-                std::string name = il2utils::conv_string(exfil_settings->get_field<Il2CppString*>("Name"));
+                const std::string name = il2utils::conv_string(exfil_settings->get_field<Il2CppString*>("Name"));
 
                 Il2CppObject* game_object = unity::component_get_game_object(exfiltration_point->get_instance());
                 Il2CppObject* tranform = unity::gameobject_get_transform(game_object);
@@ -245,10 +239,8 @@ public:
         // transit esp
         if (transits->get_value())
         {
-            Il2CppObjectInstance* transit_controller = Il2CppObjectInstance::create(
-                game_world_class->image, "EFT", "TransitController",
-                game_world_instance->get_field<Il2CppObject*>(
-                    "<TransitController>k__BackingField"));
+            const auto transit_controller = new Il2CppObjectInstance(
+                game_world_instance->get_field<Il2CppObject*>("<TransitController>k__BackingField"));
 
             const auto transits_by_id = transit_controller->get_field<unity::dict<int, Il2CppObject*>*>("pointsById");
 
@@ -256,16 +248,9 @@ public:
 
             for (int i = 0; i < transits_by_id->m_i_count; ++i)
             {
-                Il2CppObjectInstance* transit = Il2CppObjectInstance::create(
-                    game_world_class->image, "EFT.Interactive", "TransitPoint", transits_by_id->get_value_by_index(i));
+                const auto transit = new Il2CppObjectInstance(transits_by_id->get_value_by_index(i));
 
-                const Il2CppClass* transit_parameters_class = il2utils::resolve_class_nested(
-                    il2utils::resolve_class_nested(
-                        il2utils::resolve_class(game_world_class->image, "JsonType", "LocationSettings"), "Location"),
-                    "TransitParameters");
-
-                const auto parameters = new Il2CppObjectInstance(transit_parameters_class,
-                                                                 transit->get_field<Il2CppObject*>("parameters"));
+                const auto parameters = new Il2CppObjectInstance(transit->get_field<Il2CppObject*>("parameters"));
 
                 const std::string location = il2utils::conv_string(parameters->get_field<Il2CppString*>("location"));
 
@@ -287,14 +272,12 @@ public:
 
             for (size_t i = 0; i < alive_players->max_length; ++i)
             {
-                Il2CppObjectInstance* player_instance = Il2CppObjectInstance::create(
-                    game_world_class->image, "EFT", "Player",
-                    reinterpret_cast<Il2CppObject**>(&alive_players->data)[i]);
+                Il2CppObject* player_object =
+                    reinterpret_cast<Il2CppObject**>(&alive_players->data)[i];
+                if (!player_object) continue;
+                const auto player_instance = new Il2CppObjectInstance(player_object);
 
-                if (!player_instance->get_instance()) continue;
-
-                Il2CppObjectInstance* profile_instance = Il2CppObjectInstance::create(
-                    game_world_class->image, "EFT", "Profile", get_profile(player_instance->get_instance()));
+                const auto profile_instance = new Il2CppObjectInstance(get_profile(player_instance->get_instance()));
 
                 std::string nickname = eft_api::to_english(il2utils::conv_wstring(
                     profile_instance->get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
