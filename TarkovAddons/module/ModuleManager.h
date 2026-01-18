@@ -5,7 +5,9 @@
 #include "impl/ChamsModule.h"
 #include "impl/ConfigModule.h"
 #include "impl/EspModule.h"
+#include "impl/PlayerModule.h"
 #include "impl/WatermarkModule.h"
+#include "impl/WeaponModule.h"
 
 class ModuleManager;
 inline static ModuleManager* instance = nullptr;
@@ -53,6 +55,10 @@ public:
     // visuals
     EspModule* esp_module = module(new EspModule());
     ChamsModule* chams_module = module(new ChamsModule());
+
+    // exploit
+    PlayerModule* player_module = module(new PlayerModule());
+    WeaponModule* weapon_module = module(new WeaponModule());
 
     // misc
     WatermarkModule* watermark_module = module(new WatermarkModule());

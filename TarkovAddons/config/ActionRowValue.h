@@ -22,6 +22,7 @@ public:
         {
             this->action_();
         }
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
     }
 
     void set(const std::string& string) override

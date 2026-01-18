@@ -10,8 +10,8 @@ namespace menu
     namespace
     {
         bool draw_imgui = false;
-        float width;
-        float height;
+        float widthh;
+        float heightt;
         float scale_factor;
         float font_size;
         float large_font_size;
@@ -42,12 +42,12 @@ namespace menu
 
     float get_width()
     {
-        return width;
+        return widthh;
     }
 
     float get_height()
     {
-        return height;
+        return heightt;
     }
 
     bool is_active()
@@ -61,8 +61,8 @@ namespace menu
         int horizontal = 0;
         int vertical = 0;
         utils::get_desktop_resolution(horizontal, vertical);
-        width = static_cast<float>(horizontal);
-        height = static_cast<float>(vertical);
+        widthh = static_cast<float>(horizontal);
+        heightt = static_cast<float>(vertical);
         scale_factor = (static_cast<float>(horizontal) / 1920.0f + static_cast<float>(vertical) / 1080.0f) / 2.0f;
         font_size = 16 * scale_factor;
         large_font_size = 18 * scale_factor;
@@ -89,8 +89,8 @@ namespace menu
         ImGui::GetIO().WantCaptureMouse = is_active();
         if (is_active())
         {
-            float width = 600;
-            float height = 350;
+            constexpr float width = 700;
+            constexpr float height = 400;
             ImGui::SetNextWindowSize(ImVec2(width * scale_factor, height * scale_factor), ImGuiCond_Once);
             ImGui::SetNextWindowBgAlpha(1.0f);
             if (ImGui::Begin(globals::get_display_title().c_str(), &draw_imgui,
