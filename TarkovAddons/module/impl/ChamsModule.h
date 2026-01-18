@@ -123,6 +123,7 @@ public:
                 bool is_arms = name.find("watch") != std::string::npos || name.find("bear") != std::string::npos || name
                     .find("Bear") != std::string::npos || name.find("usec") != std::string::npos || name.find("arm") !=
                     std::string::npos || name.find("Usec") != std::string::npos;
+                // TODO: add more so this actually works
                 bool is_gear = name.find("rig") != std::string::npos || name.find("pack") != std::string::npos || name.
                     find("bag") != std::string::npos || name.find("helmet") != std::string::npos || name.find("pouch")
                     != std::string::npos;
