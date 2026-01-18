@@ -1,9 +1,12 @@
 #include <iostream>
 #include <windows.h>
 
+#include "assets/asset_bundles.h"
 #include "gui/dxhook/dxhook.h"
 #include "hooks/hooks.h"
 #include "il2cpp/unity.h"
+#include "module/always_on.h"
+#include "module/common_hooks.h"
 #include "module/ModuleManager.h"
 #include "util/globals.h"
 #include "util/logger.h"
@@ -61,6 +64,13 @@ namespace
         // init modules
         logger::info("Loading Modules");
         ModuleManager::get_instance()->init();
+        logger::info("Loaded Modules");
+
+        // load default features and common hooks
+        logger::info("Loading Default Features");
+        always_on::init();
+        common_hooks::init();
+        logger::info("Loaded Default Features");
 
         // wait for eject input
         while (true)

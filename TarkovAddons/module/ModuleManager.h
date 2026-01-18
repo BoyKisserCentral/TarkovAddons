@@ -2,8 +2,9 @@
 #include <functional>
 
 #include "Module.h"
+#include "impl/ChamsModule.h"
 #include "impl/ConfigModule.h"
-#include "impl/TestModule.h"
+#include "impl/EspModule.h"
 #include "impl/WatermarkModule.h"
 
 class ModuleManager;
@@ -47,10 +48,13 @@ public:
         return res;
     }
 
-    // test module
-    TestModule* test_module = module(new TestModule());
-
     // register modules here
+
+    // visuals
+    EspModule* esp_module = module(new EspModule());
+    ChamsModule* chams_module = module(new ChamsModule());
+
+    // misc
     WatermarkModule* watermark_module = module(new WatermarkModule());
 
     // this has to get instantiated last

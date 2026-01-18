@@ -7,7 +7,21 @@
 
 namespace imgui_addons
 {
-    static void tab(const std::string& label, bool selected, const std::function<void()>& action)
+    static void centered_text(ImDrawList* draw_list, ImFont* font, float font_size, const ImVec2& pos, const ImVec4 col,
+                              const std::string& text)
+    {
+        const ImVec2 size = ImGui::CalcTextSize(text.c_str());
+        draw_list->AddText(font, font_size, {pos.x - size.x / 2, pos.y - size.y / 2}, ImGui::GetColorU32(col),
+                           text.c_str());
+    }
+
+    static void centered_text(ImDrawList* draw_list, const ImVec2& pos, const ImVec4 col, const std::string& text)
+    {
+        const ImVec2 size = ImGui::CalcTextSize(text.c_str());
+        draw_list->AddText({pos.x - size.x / 2, pos.y - size.y / 2}, ImGui::GetColorU32(col), text.c_str());
+    }
+
+    static void tab(const std::string& label, const bool selected, const std::function<void()>& action)
     {
         if (selected) ImGui::PushStyleColor(ImGuiCol_Tab, ImGui::GetStyle().Colors[ImGuiCol_TabActive]);
         if (ImGui::TabItemButton(label.c_str()))

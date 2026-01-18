@@ -404,7 +404,7 @@ using Il2CppClass = struct Il2CppClass
 
     uint32_t cctor_started;
     uint32_t cctor_finished_or_no_cctor;
-    char padding[8];
+    char padding[4];
     size_t cctor_thread;
 
     // Remaining fields are always valid except where noted

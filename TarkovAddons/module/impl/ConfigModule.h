@@ -1,6 +1,5 @@
 #pragma once
 #include <fstream>
-#include <iostream>
 
 #include "../Module.h"
 #include "../ModuleCategory.h"
@@ -35,6 +34,14 @@ public:
     }, "Save", true));
 
     void draw_overlay(ImDrawList* draw_list) override
+    {
+    }
+
+    void application_update() override
+    {
+    }
+
+    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObject* game_world) override
     {
     }
 

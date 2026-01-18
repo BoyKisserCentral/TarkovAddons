@@ -10,9 +10,12 @@ namespace menu
     namespace
     {
         bool draw_imgui = false;
+        float width;
+        float height;
         float scale_factor;
         float font_size;
         float large_font_size;
+        float hud_font_size;
         ImFont* poppins_regular;
         ImFont* poppins_regular_hud;
         ImFont* sfui_light;
@@ -22,9 +25,29 @@ namespace menu
         ModuleCategory selected_tab = Aimbot;
     }
 
+    float get_hud_font_size()
+    {
+        return hud_font_size;
+    }
+
+    ImFont* get_hud_font()
+    {
+        return poppins_regular_hud;
+    }
+
     float get_scale_factor()
     {
         return scale_factor;
+    }
+
+    float get_width()
+    {
+        return width;
+    }
+
+    float get_height()
+    {
+        return height;
     }
 
     bool is_active()
@@ -38,12 +61,15 @@ namespace menu
         int horizontal = 0;
         int vertical = 0;
         utils::get_desktop_resolution(horizontal, vertical);
+        width = static_cast<float>(horizontal);
+        height = static_cast<float>(vertical);
         scale_factor = (static_cast<float>(horizontal) / 1920.0f + static_cast<float>(vertical) / 1080.0f) / 2.0f;
         font_size = 16 * scale_factor;
         large_font_size = 18 * scale_factor;
+        hud_font_size = 256 * scale_factor;
         poppins_regular = io.Fonts->AddFontFromMemoryCompressedBase85TTF(poppins_regular_data, font_size);
         poppins_regular_hud = io.Fonts->AddFontFromMemoryCompressedBase85TTF(
-            poppins_regular_data, 256 * scale_factor);
+            poppins_regular_data, hud_font_size);
         sfui_light = io.Fonts->AddFontFromMemoryCompressedTTF(light_compressed_data, light_compressed_size,
                                                               font_size);
         sfui_bold = io.Fonts->AddFontFromMemoryCompressedTTF(bold_compressed_data, bold_compressed_size,

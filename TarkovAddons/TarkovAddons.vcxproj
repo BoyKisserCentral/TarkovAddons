@@ -163,6 +163,7 @@
         <ClCompile Include="util\logger.cpp"/>
     </ItemGroup>
     <ItemGroup>
+        <ClInclude Include="assets\asset_bundles.h"/>
         <ClInclude Include="config\ActionRowValue.h"/>
         <ClInclude Include="config\CheckboxValue.h"/>
         <ClInclude Include="config\ColorpickerValue.h"/>
@@ -187,9 +188,13 @@
         <ClInclude Include="il2cpp\libil2cpp\il2cpp-object-internals.h"/>
         <ClInclude Include="il2cpp\libil2cpp\il2cpp-runtime-metadata.h"/>
         <ClInclude Include="il2cpp\unity.h"/>
+        <ClInclude Include="module\always_on.h"/>
         <ClInclude Include="module\common_hooks.h"/>
+        <ClInclude Include="module\eft_api.h"/>
+        <ClInclude Include="module\game_state.h"/>
+        <ClInclude Include="module\impl\ChamsModule.h"/>
         <ClInclude Include="module\impl\ConfigModule.h"/>
-        <ClInclude Include="module\impl\TestModule.h"/>
+        <ClInclude Include="module\impl\EspModule.h"/>
         <ClInclude Include="module\impl\WatermarkModule.h"/>
         <ClInclude Include="module\Module.h"/>
         <ClInclude Include="module\ModuleCategory.h"/>

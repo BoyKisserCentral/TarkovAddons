@@ -9,7 +9,11 @@
 
 namespace menu
 {
+    float get_width();
+    float get_height();
     float get_scale_factor();
+    float get_hud_font_size();
+    ImFont* get_hud_font();
     bool is_active();
     void setup();
     void draw();

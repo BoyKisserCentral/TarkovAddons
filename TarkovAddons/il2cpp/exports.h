@@ -1,6 +1,7 @@
 #pragma once
 #include "il2cpp_offsets.h"
 #include "libil2cpp/il2cpp-class-internals.h"
+#include "libil2cpp/il2cpp-object-internals.h"
 #include "libil2cpp/il2cpp-api-types.h"
 
 namespace il2cpp

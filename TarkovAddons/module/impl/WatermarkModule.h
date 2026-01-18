@@ -16,11 +16,22 @@ public:
     CheckboxValue* enabled = conf(new CheckboxValue(true, "Enabled"));
     TextboxValue* text = conf(new TextboxValue(globals::get_display_title(), "Text"));
     ColorpickerValue* color = conf(new ColorpickerValue({0, 0.5, 1, 1}, "Color"));
+    IntSliderValue* font_size = conf(new IntSliderValue(16, 8, 36, "Font Size"));
 
     void draw_overlay(ImDrawList* draw_list) override
     {
         if (enabled->get_value())
-            draw_list->AddText({10, 10}, ImGui::GetColorU32(color->get_value()), text->get().c_str());
+            draw_list->AddText(menu::get_hud_font(),
+                               static_cast<float>(font_size->get_value()) * menu::get_scale_factor(), {10, 10},
+                               ImGui::GetColorU32(color->get_value()), text->get().c_str());
+    }
+
+    void application_update() override
+    {
+    }
+
+    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObject* game_world) override
+    {
     }
 
     void init() override
