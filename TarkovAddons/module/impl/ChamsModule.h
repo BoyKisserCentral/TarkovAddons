@@ -25,16 +25,42 @@ public:
 
     CheckboxValue* player_chams = conf(new CheckboxValue(true, "Player Chams"));
     CheckboxValue* gear_chams = conf(new CheckboxValue(false, "Gear Chams"));
-    SelectValue* chams_type = conf(new SelectValue(0, {"Solid", "Wireframe"}, "Type"));
+    SelectValue* chams_type = conf(new SelectValue(0, {
+                                                       "Solid", "Wireframe", "Forcefield", "Glass", "Lava"
+                                                   }, "Type"));
     ColorpickerValue* visible_color = conf(new ColorpickerValue({0, 1, 0, 1}, "Visible Color"));
     ColorpickerValue* invisible_color = conf(new ColorpickerValue({1, 0, 0, 1}, "Invisible Color"));
     CheckboxValue* weapon_chams = conf(new CheckboxValue(true, "Weapon Chams"));
-    SelectValue* weapon_chams_type = conf(new SelectValue(0, {"Solid", "Wireframe"}, "Weapon Type"));
+    SelectValue* weapon_chams_type = conf(
+        new SelectValue(0, {"Solid", "Wireframe", "Forcefield", "Glass", "Lava"}, "Weapon Type"));
     ColorpickerValue* weapon_chams_color = conf(new ColorpickerValue({.5, 0, .5, .5}, "Weapon Color"));
     CheckboxValue* include_scope = conf(new CheckboxValue(false, "Include Scope"));
     CheckboxValue* include_arms = conf(new CheckboxValue(true, "Include Arms"));
 
     std::set<size_t> applied_players = std::set<size_t>();
+
+    static std::string get_shader_name(const int id)
+    {
+        switch (id)
+        {
+        case 0:
+            return "chams.shader";
+        case 1:
+            return
+                "wireframe.shader";
+        case 2:
+            return
+                "forcefield.shader";
+        case 3:
+            return
+                "glass.shader";
+        case 4:
+            return
+                "lava.shader";
+        default:
+            return "";
+        }
+    }
 
     void draw_overlay(ImDrawList* draw_list) override
     {
@@ -106,20 +132,8 @@ public:
                     if (!asset_bundles::asset_bundle) continue;
                     Il2CppObject* shader_system_type = il2utils::get_system_type(
                         unity_image, "UnityEngine", "Shader");
-                    Il2CppObject* chams_shader;
-                    switch (weapon_chams_type->get_value())
-                    {
-                    case 0:
-                        chams_shader = asset_bundles::load_asset(
-                            "chams.shader", shader_system_type);
-                        break;
-                    case 1:
-                        chams_shader = asset_bundles::load_asset(
-                            "wireframe.shader", shader_system_type);
-                        break;
-                    default:
-                        chams_shader = nullptr;
-                    }
+                    Il2CppObject* chams_shader = asset_bundles::load_asset(
+                        get_shader_name(weapon_chams_type->get_value()).c_str(), shader_system_type);
 
                     material_instance->get_method<void(*)(Il2CppObject*, Il2CppObject*)>("set_shader", 1)(
                         material_instance->get_instance(), chams_shader);
@@ -208,20 +222,8 @@ public:
                             if (!asset_bundles::asset_bundle) continue;
                             Il2CppObject* shader_system_type = il2utils::get_system_type(
                                 unity_image, "UnityEngine", "Shader");
-                            Il2CppObject* chams_shader;
-                            switch (chams_type->get_value())
-                            {
-                            case 0:
-                                chams_shader = asset_bundles::load_asset(
-                                    "chams.shader", shader_system_type);
-                                break;
-                            case 1:
-                                chams_shader = asset_bundles::load_asset(
-                                    "wireframe.shader", shader_system_type);
-                                break;
-                            default:
-                                chams_shader = nullptr;
-                            }
+                            Il2CppObject* chams_shader = asset_bundles::load_asset(
+                                get_shader_name(chams_type->get_value()).c_str(), shader_system_type);
 
                             material_instance->get_method<void(*)(Il2CppObject*, Il2CppObject*)>("set_shader", 1)(
                                 material_instance->get_instance(), chams_shader);
