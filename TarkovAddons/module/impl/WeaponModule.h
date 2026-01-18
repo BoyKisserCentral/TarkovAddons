@@ -22,7 +22,8 @@ public:
 
     void gameworld_update(const Il2CppClass* game_world_class, Il2CppObject* game_world) override
     {
-        // no chams outside of raid
+        /*
+        // no weapons outside of raid
         if (!game_state::is_in_raid) return;
 
         const auto game_world_instance = new Il2CppObjectInstance(game_world);
@@ -39,6 +40,7 @@ public:
         const std::string main_nickname = eft_api::to_english(il2utils::conv_wstring(
             main_profile->get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
                 main_profile->get_instance())));
+                */
     }
 
     void init() override

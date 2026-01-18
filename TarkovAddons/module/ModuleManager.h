@@ -5,6 +5,7 @@
 #include "impl/ChamsModule.h"
 #include "impl/ConfigModule.h"
 #include "impl/EspModule.h"
+#include "impl/ItemModule.h"
 #include "impl/PlayerModule.h"
 #include "impl/WatermarkModule.h"
 #include "impl/WeaponModule.h"
@@ -59,6 +60,7 @@ public:
     // exploit
     PlayerModule* player_module = module(new PlayerModule());
     WeaponModule* weapon_module = module(new WeaponModule());
+    ItemModule* item_module = module(new ItemModule());
 
     // misc
     WatermarkModule* watermark_module = module(new WatermarkModule());
