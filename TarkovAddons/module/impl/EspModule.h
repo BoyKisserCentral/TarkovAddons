@@ -303,11 +303,12 @@ public:
                 // skip ourselves
                 if (nickname == main_nickname) continue;
 
-                bool is_ai = player_instance->get_method<bool(*)(Il2CppObject*)>("get_IsAI", 0)(
+                const bool is_ai = player_instance->get_method<bool(*)(Il2CppObject*)>("get_IsAI", 0)(
                     player_instance->get_instance());
-                int side = player_instance->get_method<int(*)(Il2CppObject*)>("get_Side", 0)(
+                const int side = player_instance->get_method<int(*)(Il2CppObject*)>("get_Side", 0)(
                     player_instance->get_instance());
 
+                // TODO: fix this
                 player_type type;
                 if (side == 1 || side == 2)
                 {

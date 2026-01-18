@@ -100,8 +100,10 @@ public:
                 bool is_arms = name.find("watch") != std::string::npos || name.find("bear") != std::string::npos || name
                     .find("Bear") != std::string::npos || name.find("usec") != std::string::npos || name.find("arm") !=
                     std::string::npos || name.find("Usec") != std::string::npos;
-
-                if ((!is_scope || include_scope->get_value()) && (!is_arms || include_arms->get_value()))
+                bool is_gear = name.find("rig") != std::string::npos || name.find("pack") != std::string::npos || name.
+                    find("bag") != std::string::npos || name.find("helmet") != std::string::npos || name.find("pouch")
+                    != std::string::npos;
+                if ((!is_scope || include_scope->get_value()) && (!is_arms || include_arms->get_value()) && !is_gear)
                 {
                     // load shader from assetbundle
                     if (!asset_bundles::asset_bundle) continue;

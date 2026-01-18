@@ -145,7 +145,7 @@ namespace menu
                         ImGui::Unindent();
                     });
 
-                    if (ImGui::GetCursorPosY() >= 0.75f * height * scale_factor)
+                    if (ImGui::GetCursorPosY() >= 0.5f * height * scale_factor)
                     {
                         overflow = true;
                         ImGui::EndChild();
