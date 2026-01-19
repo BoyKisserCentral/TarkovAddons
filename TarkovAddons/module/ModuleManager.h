@@ -16,6 +16,17 @@ inline static ModuleManager* instance = nullptr;
 class ModuleManager
 {
 public:
+    ~ModuleManager()
+    {
+        for (auto module : modules)
+        {
+            delete static_cast<Module*>(module);
+        }
+    }
+
+    ModuleManager()
+    = default;
+
     void init() const
     {
         for (auto module : modules)

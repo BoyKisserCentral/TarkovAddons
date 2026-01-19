@@ -75,28 +75,28 @@ public:
         // no chams outside of raid
         if (!game_state::is_in_raid) return;
 
-        const auto game_world_instance = new Il2CppObjectInstance(game_world);
-        auto main_player_object = game_world_instance->get_field<Il2CppObject*>("MainPlayer");
+        Il2CppObjectInstance game_world_instance(game_world);
+        auto main_player_object = game_world_instance.get_field<Il2CppObject*>("MainPlayer");
 
         // if player is not loaded yet
         if (main_player_object == nullptr) return;
 
-        const auto main_player = new Il2CppObjectInstance(main_player_object);
+        Il2CppObjectInstance main_player(main_player_object);
 
         const Il2CppImage* unity_image = il2utils::resolve_image("UnityEngine.CoreModule.dll");
 
-        const auto get_profile = main_player->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Profile", 0);
-        auto main_profile = new Il2CppObjectInstance(get_profile(main_player->get_instance()));
+        const auto get_profile = main_player.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Profile", 0);
+        Il2CppObjectInstance main_profile(get_profile(main_player.get_instance()));
 
         const std::string main_nickname = eft_api::to_english(il2utils::conv_wstring(
-            main_profile->get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
-                main_profile->get_instance())));
+            main_profile.get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
+                main_profile.get_instance())));
 
         // weapon chams
         if (weapon_chams->get_value())
         {
             Il2CppObject* renderer_type = il2utils::get_system_type(unity_image, "UnityEngine", "Renderer");
-            const auto main_player_game_object = unity::component_get_game_object(main_player->get_instance());
+            const auto main_player_game_object = unity::component_get_game_object(main_player.get_instance());
             const auto main_player_transform = unity::gameobject_get_transform(main_player_game_object);
             std::vector<Il2CppObject*> renderers{};
             unity::transform_apply_to_all_children(main_player_transform,
@@ -111,21 +111,27 @@ public:
             for (const auto renderer : renderers)
             {
                 if (renderer == nullptr) continue;
-                const auto renderer_instance = new Il2CppObjectInstance(renderer);
+                Il2CppObjectInstance renderer_instance(renderer);
 
-                auto material_instance = new Il2CppObjectInstance(
-                    renderer_instance->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_material", 0)(
-                        renderer_instance->get_instance()));
+                Il2CppObjectInstance material_instance(
+                    renderer_instance.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_material", 0)(
+                        renderer_instance.get_instance()));
 
-                std::string name = unity::get_name(material_instance->get_instance());
+                std::string name = unity::get_name(material_instance.get_instance());
 
                 bool is_scope = name.find("scope") != std::string::npos || name.find("optic") != std::string::npos;
                 bool is_arms = name.find("watch") != std::string::npos || name.find("bear") != std::string::npos || name
                     .find("Bear") != std::string::npos || name.find("usec") != std::string::npos || name.find("arm") !=
                     std::string::npos || name.find("Usec") != std::string::npos;
                 // TODO: add more so this actually works
-                bool is_gear = name.find("rig") != std::string::npos || name.find("pack") != std::string::npos || name.
-                    find("bag") != std::string::npos || name.find("helmet") != std::string::npos || name.find("pouch")
+                bool is_gear = name.find("helmet")
+                    != std::string::npos || name.find("glasses")
+                    != std::string::npos || name.find("cover")
+                    != std::string::npos || name.find("rig")
+                    != std::string::npos || name.find("belt")
+                    != std::string::npos || name.find("wear")
+                    != std::string::npos || name.find("mask")
+                    != std::string::npos || name.find("balaclava")
                     != std::string::npos;
                 if ((!is_scope || include_scope->get_value()) && (!is_arms || include_arms->get_value()) && !is_gear)
                 {
@@ -136,19 +142,19 @@ public:
                     Il2CppObject* chams_shader = asset_bundles::load_asset(
                         get_shader_name(weapon_chams_type->get_value()).c_str(), shader_system_type);
 
-                    material_instance->get_method<void(*)(Il2CppObject*, Il2CppObject*)>("set_shader", 1)(
-                        material_instance->get_instance(), chams_shader);
+                    material_instance.get_method<void(*)(Il2CppObject*, Il2CppObject*)>("set_shader", 1)(
+                        material_instance.get_instance(), chams_shader);
 
                     Il2CppString* color_visible = il2cpp::il2cpp_string_new("_Color_Visible");
                     Il2CppString* color_occluded = il2cpp::il2cpp_string_new("_Color_Occluded");
 
-                    const auto set_color = material_instance->get_method<void(*)(
+                    const auto set_color = material_instance.get_method<void(*)(
                         Il2CppObject*, Il2CppString*, unity::color)>("SetColor", 2);
 
                     const ImVec4 visible = weapon_chams_color->get_value();
-                    set_color(material_instance->get_instance(), color_visible,
+                    set_color(material_instance.get_instance(), color_visible,
                               unity::color{visible.x, visible.y, visible.z, visible.w});
-                    set_color(material_instance->get_instance(), color_occluded,
+                    set_color(material_instance.get_instance(), color_occluded,
                               unity::color{visible.x, visible.y, visible.z, visible.w});
                 }
             }
@@ -157,21 +163,21 @@ public:
         // chams
         if (player_chams->get_value())
         {
-            Il2CppArray* alive_players = game_world_instance->get_field<unity::list*>("AllAlivePlayersList")->
-                                                              m_p_list_array;
+            Il2CppArray* alive_players = game_world_instance.get_field<unity::list*>("AllAlivePlayersList")->
+                                                             m_p_list_array;
 
             for (size_t i = 0; i < alive_players->max_length; ++i)
             {
                 Il2CppObject* player_object =
                     reinterpret_cast<Il2CppObject**>(&alive_players->data)[i];
                 if (!player_object) continue;
-                const auto player_instance = new Il2CppObjectInstance(player_object);
+                Il2CppObjectInstance player_instance(player_object);
 
-                auto profile_instance = new Il2CppObjectInstance(get_profile(player_instance->get_instance()));
+                Il2CppObjectInstance profile_instance(get_profile(player_instance.get_instance()));
 
                 std::string nickname = eft_api::to_english(il2utils::conv_wstring(
-                    profile_instance->get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
-                        profile_instance->get_instance())));
+                    profile_instance.get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
+                        profile_instance.get_instance())));
 
                 // skip ourselves
                 if (nickname == main_nickname) continue;
@@ -186,33 +192,33 @@ public:
                 if (applied_players.contains(Hash::get(nickname.c_str()))) continue;
 
                 // explicit type required
-                auto player_body = new Il2CppObjectInstance(
+                Il2CppObjectInstance player_body(
                     game_world_class->image, "EFT", "PlayerBody",
-                    player_instance->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_PlayerBody", 0)(
-                        player_instance->get_instance()));
+                    player_instance.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_PlayerBody", 0)(
+                        player_instance.get_instance()));
 
-                const auto body_skins = player_body->get_field<unity::dict<int, Il2CppObject*>*>("BodySkins");
+                const auto body_skins = player_body.get_field<unity::dict<int, Il2CppObject*>*>("BodySkins");
 
                 for (int j = 0; j < body_skins->m_i_count; ++j)
                 {
-                    auto lodded_skin = new Il2CppObjectInstance(body_skins->get_value_by_index(j));
+                    Il2CppObjectInstance lodded_skin(body_skins->get_value_by_index(j));
 
-                    const auto lods_array = lodded_skin->get_field<Il2CppArray*>("_lods");
+                    const auto lods_array = lodded_skin.get_field<Il2CppArray*>("_lods");
                     for (size_t k = 0; k < lods_array->max_length; ++k)
                     {
                         Il2CppObject* skin_object = reinterpret_cast<Il2CppObject**>(&lods_array->data)[k];
-                        const auto abstract_skin_instance = new Il2CppObjectInstance(skin_object);
+                        Il2CppObjectInstance abstract_skin_instance(skin_object);
 
-                        const auto skinned_mesh_renderer = new Il2CppObjectInstance(
-                            abstract_skin_instance->get_method<Il2CppObject*(*)(Il2CppObject*)>(
-                                "get_SkinnedMeshRenderer", 0)(abstract_skin_instance->get_instance())
+                        Il2CppObjectInstance skinned_mesh_renderer(
+                            abstract_skin_instance.get_method<Il2CppObject*(*)(Il2CppObject*)>(
+                                "get_SkinnedMeshRenderer", 0)(abstract_skin_instance.get_instance())
                         );
 
-                        auto material_instance = new Il2CppObjectInstance(
-                            skinned_mesh_renderer->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_material", 0)(
-                                skinned_mesh_renderer->get_instance()));
+                        Il2CppObjectInstance material_instance(
+                            skinned_mesh_renderer.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_material", 0)(
+                                skinned_mesh_renderer.get_instance()));
 
-                        std::string name = unity::get_name(material_instance->get_instance());
+                        std::string name = unity::get_name(material_instance.get_instance());
                         if (!(name.find("armour") != std::string::npos || name.find("helmet") != std::string::npos ||
                             name.find("glasses") != std::string::npos || name.find("cover") != std::string::npos ||
                             name.find("rig") != std::string::npos || name.find("belt") != std::string::npos || name.
@@ -226,20 +232,20 @@ public:
                             Il2CppObject* chams_shader = asset_bundles::load_asset(
                                 get_shader_name(chams_type->get_value()).c_str(), shader_system_type);
 
-                            material_instance->get_method<void(*)(Il2CppObject*, Il2CppObject*)>("set_shader", 1)(
-                                material_instance->get_instance(), chams_shader);
+                            material_instance.get_method<void(*)(Il2CppObject*, Il2CppObject*)>("set_shader", 1)(
+                                material_instance.get_instance(), chams_shader);
 
                             Il2CppString* color_visible = il2cpp::il2cpp_string_new("_Color_Visible");
                             Il2CppString* color_occluded = il2cpp::il2cpp_string_new("_Color_Occluded");
 
-                            const auto set_color = material_instance->get_method<void(*)(
+                            const auto set_color = material_instance.get_method<void(*)(
                                 Il2CppObject*, Il2CppString*, unity::color)>("SetColor", 2);
 
                             const ImVec4 visible = visible_color->get_value();
                             const ImVec4 invisible = invisible_color->get_value();
-                            set_color(material_instance->get_instance(), color_visible,
+                            set_color(material_instance.get_instance(), color_visible,
                                       unity::color{visible.x, visible.y, visible.z, visible.w});
-                            set_color(material_instance->get_instance(), color_occluded,
+                            set_color(material_instance.get_instance(), color_occluded,
                                       unity::color{invisible.x, invisible.y, invisible.z, invisible.w});
                         }
                     }

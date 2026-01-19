@@ -1183,15 +1183,15 @@ namespace asset_bundles
 
     inline bool check_progress(Il2CppObject* request_object)
     {
-        auto async_operation = new Il2CppObjectInstance(request_object);
+        Il2CppObjectInstance async_operation(request_object);
 
-        const auto is_done = async_operation->get_method<bool(*)(Il2CppObject*)>("get_isDone", 0);
-        const auto get_progress = async_operation->get_method<float(*)(Il2CppObject*)>("get_progress", 0);
+        const auto is_done = async_operation.get_method<bool(*)(Il2CppObject*)>("get_isDone", 0);
+        const auto get_progress = async_operation.get_method<float(*)(Il2CppObject*)>("get_progress", 0);
         if (is_done(request_object))
         {
-            auto asset_bundle_request = new Il2CppObjectInstance(request_object);
+            Il2CppObjectInstance asset_bundle_request(request_object);
 
-            asset_bundle = asset_bundle_request->get_method<Il2CppObject*(*)(Il2CppObject*)>(
+            asset_bundle = asset_bundle_request.get_method<Il2CppObject*(*)(Il2CppObject*)>(
                 "get_assetBundle", 0)(request_object);
             logger::info("Loaded Asset Bundle");
 
@@ -1213,9 +1213,9 @@ namespace asset_bundles
 
     inline Il2CppObject* load_asset(const char* name, Il2CppObject* system_type)
     {
-        auto asset_bundle_instance = new Il2CppObjectInstance(asset_bundle);
+        Il2CppObjectInstance asset_bundle_instance(asset_bundle);
 
-        auto load_asset = asset_bundle_instance->get_method<Il2CppObject*(*)(
+        auto load_asset = asset_bundle_instance.get_method<Il2CppObject*(*)(
             Il2CppObject*, Il2CppString*, Il2CppObject*)>("LoadAsset", 2);
         Il2CppString* il2string = il2cpp::il2cpp_string_new(name);
         return load_asset(asset_bundle, il2string, system_type);

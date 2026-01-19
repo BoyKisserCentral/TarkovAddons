@@ -10,7 +10,13 @@
 class Module
 {
 public:
-    virtual ~Module() = default;
+    virtual ~Module()
+    {
+        for (const auto config_value : config_values)
+        {
+            delete config_value;
+        }
+    }
 
     Module(const std::string& name, const ModuleCategory category)
     {

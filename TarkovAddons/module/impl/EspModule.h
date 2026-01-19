@@ -182,50 +182,49 @@ public:
         // no esp outside of raid
         if (!game_state::is_in_raid) return;
 
-        const auto game_world_instance = new Il2CppObjectInstance(game_world);
-        auto main_player_object = game_world_instance->get_field<Il2CppObject*>("MainPlayer");
+        Il2CppObjectInstance game_world_instance(game_world);
+        auto main_player_object = game_world_instance.get_field<Il2CppObject*>("MainPlayer");
 
         // if player is not loaded yet
         if (main_player_object == nullptr) return;
 
-        const auto main_player = new Il2CppObjectInstance(main_player_object);
-        const auto main_player_game_object = unity::component_get_game_object(main_player->get_instance());
+        Il2CppObjectInstance main_player(main_player_object);
+        const auto main_player_game_object = unity::component_get_game_object(main_player.get_instance());
         const auto main_player_transform = unity::gameobject_get_transform(main_player_game_object);
         my_pos = unity::transform_get_pos(main_player_transform);
 
-        const auto get_profile = main_player->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Profile", 0);
-        const auto main_profile = new Il2CppObjectInstance(get_profile(main_player->get_instance()));
+        const auto get_profile = main_player.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Profile", 0);
+        Il2CppObjectInstance main_profile(get_profile(main_player.get_instance()));
 
         const std::string main_nickname = eft_api::to_english(il2utils::conv_wstring(
-            main_profile->get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
-                main_profile->get_instance())));
+            main_profile.get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
+                main_profile.get_instance())));
 
         // extract esp
         if (extracts->get_value())
         {
-            const auto exfiltration_controller = new Il2CppObjectInstance(
-                game_world_instance->get_field<Il2CppObject*>(
+            Il2CppObjectInstance exfiltration_controller(
+                game_world_instance.get_field<Il2CppObject*>(
                     "<ExfiltrationController>k__BackingField"));
 
-            const auto exfils = exfiltration_controller->get_method<Il2CppArray*(
-                *)(Il2CppObject*, Il2CppObject*)>("EligiblePoints", 1)(exfiltration_controller->get_instance(),
-                                                                       main_profile->get_instance());
+            const auto exfils = exfiltration_controller.get_method<Il2CppArray*(
+                *)(Il2CppObject*, Il2CppObject*)>("EligiblePoints", 1)(exfiltration_controller.get_instance(),
+                                                                       main_profile.get_instance());
 
             auto new_exfils = std::vector<exfil>();
             for (size_t i = 0; i < exfils->max_length; ++i)
             {
                 Il2CppObject* exfil = reinterpret_cast<Il2CppObject**>(&exfils->data)[i];
                 if (!exfil) continue;
-                const auto exfiltration_point = new Il2CppObjectInstance(exfil);
+                Il2CppObjectInstance exfiltration_point(exfil);
 
-                const int status = exfiltration_point->get_field<int>("_status");
+                const int status = exfiltration_point.get_field<int>("_status");
 
-                const auto exfil_settings = new
-                    Il2CppObjectInstance(exfiltration_point->get_field<Il2CppObject*>("Settings"));
+                Il2CppObjectInstance exfil_settings(exfiltration_point.get_field<Il2CppObject*>("Settings"));
 
-                const std::string name = il2utils::conv_string(exfil_settings->get_field<Il2CppString*>("Name"));
+                const std::string name = il2utils::conv_string(exfil_settings.get_field<Il2CppString*>("Name"));
 
-                Il2CppObject* game_object = unity::component_get_game_object(exfiltration_point->get_instance());
+                Il2CppObject* game_object = unity::component_get_game_object(exfiltration_point.get_instance());
                 Il2CppObject* tranform = unity::gameobject_get_transform(game_object);
 
                 new_exfils.push_back({
@@ -239,22 +238,22 @@ public:
         // transit esp
         if (transits->get_value())
         {
-            const auto transit_controller = new Il2CppObjectInstance(
-                game_world_instance->get_field<Il2CppObject*>("<TransitController>k__BackingField"));
+            Il2CppObjectInstance transit_controller(
+                game_world_instance.get_field<Il2CppObject*>("<TransitController>k__BackingField"));
 
-            const auto transits_by_id = transit_controller->get_field<unity::dict<int, Il2CppObject*>*>("pointsById");
+            const auto transits_by_id = transit_controller.get_field<unity::dict<int, Il2CppObject*>*>("pointsById");
 
             auto new_transits = std::vector<transit>();
 
             for (int i = 0; i < transits_by_id->m_i_count; ++i)
             {
-                const auto transit = new Il2CppObjectInstance(transits_by_id->get_value_by_index(i));
+                Il2CppObjectInstance transit(transits_by_id->get_value_by_index(i));
 
-                const auto parameters = new Il2CppObjectInstance(transit->get_field<Il2CppObject*>("parameters"));
+                Il2CppObjectInstance parameters(transit.get_field<Il2CppObject*>("parameters"));
 
-                const std::string location = il2utils::conv_string(parameters->get_field<Il2CppString*>("location"));
+                const std::string location = il2utils::conv_string(parameters.get_field<Il2CppString*>("location"));
 
-                Il2CppObject* transit_game_object = unity::component_get_game_object(transit->get_instance());
+                Il2CppObject* transit_game_object = unity::component_get_game_object(transit.get_instance());
                 Il2CppObject* transit_transform = unity::gameobject_get_transform(transit_game_object);
 
                 new_transits.push_back({.name = location, .pos3d = unity::transform_get_pos(transit_transform)});
@@ -267,29 +266,29 @@ public:
         auto new_players = std::vector<player>();
         if (players->get_value())
         {
-            Il2CppArray* alive_players = game_world_instance->get_field<unity::list*>("AllAlivePlayersList")->
-                                                              m_p_list_array;
+            Il2CppArray* alive_players = game_world_instance.get_field<unity::list*>("AllAlivePlayersList")->
+                                                             m_p_list_array;
 
             for (size_t i = 0; i < alive_players->max_length; ++i)
             {
                 Il2CppObject* player_object =
                     reinterpret_cast<Il2CppObject**>(&alive_players->data)[i];
                 if (!player_object) continue;
-                const auto player_instance = new Il2CppObjectInstance(player_object);
+                Il2CppObjectInstance player_instance(player_object);
 
-                const auto profile_instance = new Il2CppObjectInstance(get_profile(player_instance->get_instance()));
+                Il2CppObjectInstance profile_instance(get_profile(player_instance.get_instance()));
 
                 std::string nickname = eft_api::to_english(il2utils::conv_wstring(
-                    profile_instance->get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
-                        profile_instance->get_instance())));
+                    profile_instance.get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
+                        profile_instance.get_instance())));
 
                 // skip ourselves
                 if (nickname == main_nickname) continue;
 
-                const bool is_ai = player_instance->get_method<bool(*)(Il2CppObject*)>("get_IsAI", 0)(
-                    player_instance->get_instance());
-                const int side = player_instance->get_method<int(*)(Il2CppObject*)>("get_Side", 0)(
-                    player_instance->get_instance());
+                const bool is_ai = player_instance.get_method<bool(*)(Il2CppObject*)>("get_IsAI", 0)(
+                    player_instance.get_instance());
+                const int side = player_instance.get_method<int(*)(Il2CppObject*)>("get_Side", 0)(
+                    player_instance.get_instance());
 
                 // TODO: fix this
                 player_type type;
@@ -303,7 +302,7 @@ public:
                     else type = player_type::player_scav;
                 }
 
-                Il2CppObject* player_game_object = unity::component_get_game_object(player_instance->get_instance());
+                Il2CppObject* player_game_object = unity::component_get_game_object(player_instance.get_instance());
                 Il2CppObject* player_transform = unity::gameobject_get_transform(player_game_object);
 
                 new_players.push_back({

@@ -414,26 +414,26 @@ namespace unity
 
     inline int camera_pixel_height(Il2CppObject* camera_inst)
     {
-        const auto inst = new Il2CppObjectInstance(camera_inst);
-        return inst->get_method<int(*)(Il2CppObject*)>("get_pixelHeight", 0)(camera_inst);
+        Il2CppObjectInstance inst(camera_inst);
+        return inst.get_method<int(*)(Il2CppObject*)>("get_pixelHeight", 0)(camera_inst);
     }
 
     inline int camera_pixel_width(Il2CppObject* camera_inst)
     {
-        const auto inst = new Il2CppObjectInstance(camera_inst);
-        return inst->get_method<int(*)(Il2CppObject*)>("get_pixelWidth", 0)(camera_inst);
+        Il2CppObjectInstance inst(camera_inst);
+        return inst.get_method<int(*)(Il2CppObject*)>("get_pixelWidth", 0)(camera_inst);
     }
 
     inline float camera_aspect(Il2CppObject* camera_inst)
     {
-        const auto inst = new Il2CppObjectInstance(camera_inst);
-        return inst->get_method<float(*)(Il2CppObject*)>("get_aspect", 0)(camera_inst);
+        Il2CppObjectInstance inst(camera_inst);
+        return inst.get_method<float(*)(Il2CppObject*)>("get_aspect", 0)(camera_inst);
     }
 
     inline float camera_fov(Il2CppObject* camera_inst)
     {
-        const auto inst = new Il2CppObjectInstance(camera_inst);
-        return inst->get_method<float(*)(Il2CppObject*)>("get_fieldOfView", 0)(camera_inst);
+        Il2CppObjectInstance inst(camera_inst);
+        return inst.get_method<float(*)(Il2CppObject*)>("get_fieldOfView", 0)(camera_inst);
     }
 
     inline Il2CppObject* get_current_camera()
@@ -459,20 +459,20 @@ namespace unity
 
     inline int transform_get_child_count(Il2CppObject* transform)
     {
-        const auto instance = new Il2CppObjectInstance(transform);
-        return instance->get_method<int(*)(Il2CppObject*)>("get_childCount", 0)(transform);
+        Il2CppObjectInstance instance(transform);
+        return instance.get_method<int(*)(Il2CppObject*)>("get_childCount", 0)(transform);
     }
 
     inline Il2CppObject* transform_get_child(Il2CppObject* transform, const int index)
     {
-        const auto instance = new Il2CppObjectInstance(transform);
-        return instance->get_method<Il2CppObject*(*)(Il2CppObject*, int)>("GetChild", 1)(transform, index);
+        Il2CppObjectInstance instance(transform);
+        return instance.get_method<Il2CppObject*(*)(Il2CppObject*, int)>("GetChild", 1)(transform, index);
     }
 
     inline Il2CppObject* transform_get_game_object(Il2CppObject* transform)
     {
-        const auto instance = new Il2CppObjectInstance(transform);
-        return instance->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_gameObject", 0)(transform);
+        Il2CppObjectInstance instance(transform);
+        return instance.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_gameObject", 0)(transform);
     }
 
     inline void transform_apply_to_all_children(Il2CppObject* transform, const std::function<void(Il2CppObject*)>& func)

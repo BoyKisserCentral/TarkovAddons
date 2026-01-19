@@ -83,13 +83,24 @@ namespace
             }
         }
 
+
+        // shut down menu
         logger::info("Unhooked Present");
         dxhook::shutdown();
+
+        // shut down imgui
         logger::info("Shutdown ImGui");
         dxhook::shutdown_imgui();
+
+        // unhook all
         logger::info("Unhooked All");
         hooks::unhook_all();
+
+        // delete modulemanager
+        delete ModuleManager::get_instance();
+
         if (globals::console) hide_console();
+
         // TODO: link back into ldr if unlinked so we can eject
         FreeLibraryAndExitThread(this_module, 0);
     }

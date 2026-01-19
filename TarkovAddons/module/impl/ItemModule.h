@@ -77,21 +77,21 @@ public:
         // no items outside of raid
         if (!game_state::is_in_raid) return;
 
-        const auto game_world_instance = new Il2CppObjectInstance(game_world);
-        const auto main_player_object = game_world_instance->get_field<Il2CppObject*>("MainPlayer");
+        Il2CppObjectInstance game_world_instance(game_world);
+        const auto main_player_object = game_world_instance.get_field<Il2CppObject*>("MainPlayer");
 
         // if player is not loaded yet
         if (main_player_object == nullptr) return;
 
-        const auto main_player = new Il2CppObjectInstance(main_player_object);
+        Il2CppObjectInstance main_player(main_player_object);
 
         if (queue_create_item)
         {
             queue_create_item = false;
             if (!item_factory) return;
 
-            const auto item_factory_instance = new Il2CppObjectInstance(item_factory);
-            const auto create_item_method = item_factory_instance->get_method<Il2CppObject*(*)(
+            Il2CppObjectInstance item_factory_instance(item_factory);
+            const auto create_item_method = item_factory_instance.get_method<Il2CppObject*(*)(
                 Il2CppObject*, Il2CppString*, Il2CppString*,
                 Il2CppObject*)>("CreateItem", 3);
 
@@ -100,24 +100,24 @@ public:
                                                     il2cpp::il2cpp_string_new(generate_mongo_id().c_str()),
                                                     il2cpp::il2cpp_string_new(item_id->get().c_str()), nullptr);
 
-            const auto inventory_controller = new Il2CppObjectInstance(
-                main_player->get_field<Il2CppObject*>("_inventoryController"));
+            Il2CppObjectInstance inventory_controller(
+                main_player.get_field<Il2CppObject*>("_inventoryController"));
 
-            const auto inventory = new Il2CppObjectInstance(
-                inventory_controller->get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Inventory", 0)(
-                    inventory_controller->get_instance()));
+            Il2CppObjectInstance inventory(
+                inventory_controller.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Inventory", 0)(
+                    inventory_controller.get_instance()));
 
-            const auto equipment = new Il2CppObjectInstance(
-                inventory->get_field<Il2CppObject*>("Equipment"));
+            Il2CppObjectInstance equipment(
+                inventory.get_field<Il2CppObject*>("Equipment"));
 
             // TODO: make it so it actually goes into the backpack
             // 3 = Knife
-            const auto backpack_slot = new Il2CppObjectInstance(
-                equipment->get_method<Il2CppObject*(*)(Il2CppObject*, int)>("GetSlot", 1)(
-                    equipment->get_instance(), 3));
+            Il2CppObjectInstance backpack_slot(
+                equipment.get_method<Il2CppObject*(*)(Il2CppObject*, int)>("GetSlot", 1)(
+                    equipment.get_instance(), 3));
 
-            backpack_slot->get_method<Il2CppObject*(*)(Il2CppObject*, Il2CppObject*)>("Add", 1)(
-                backpack_slot->get_instance(), item);
+            backpack_slot.get_method<Il2CppObject*(*)(Il2CppObject*, Il2CppObject*)>("Add", 1)(
+                backpack_slot.get_instance(), item);
         }
     }
 
