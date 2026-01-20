@@ -10,6 +10,7 @@
 #include "impl/PlayerModule.h"
 #include "impl/WatermarkModule.h"
 #include "impl/WeaponModule.h"
+#include "impl/WorldModule.h"
 
 class ModuleManager;
 inline static ModuleManager* instance = nullptr;
@@ -67,13 +68,14 @@ public:
 
     // aimbot
     AimbotModule* aimbot_module = module(new AimbotModule());
-    
+
     // visuals
     EspModule* esp_module = module(new EspModule());
     ChamsModule* chams_module = module(new ChamsModule());
 
     // exploit
     PlayerModule* player_module = module(new PlayerModule());
+    WorldModule* world_module = module(new WorldModule());
     WeaponModule* weapon_module = module(new WeaponModule());
     ItemModule* item_module = module(new ItemModule());
 

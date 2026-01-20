@@ -200,6 +200,7 @@
         <ClInclude Include="module\impl\PlayerModule.h"/>
         <ClInclude Include="module\impl\WatermarkModule.h"/>
         <ClInclude Include="module\impl\WeaponModule.h"/>
+        <ClInclude Include="module\impl\WorldModule.h"/>
         <ClInclude Include="module\Module.h"/>
         <ClInclude Include="module\ModuleCategory.h"/>
         <ClInclude Include="module\ModuleManager.h"/>
