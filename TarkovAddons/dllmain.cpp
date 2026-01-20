@@ -79,7 +79,7 @@ namespace
             if (GetAsyncKeyState(VK_DELETE) & 1)
             {
                 logger::info("Ejecting");
-                break;
+                // break;
             }
         }
 
