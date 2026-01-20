@@ -12,7 +12,6 @@ namespace eft_api
         return screen_point;
     }
 
-    // TODO: fix this, not feeling like it rn
     /*
     inline unity::vector3 world_to_screen_scoped(Il2CppObject* camera, Il2CppObject* scope_camera,
                                                  unity::vector3 world_point)

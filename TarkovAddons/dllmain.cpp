@@ -101,7 +101,6 @@ namespace
 
         if (globals::console) hide_console();
 
-        // TODO: link back into ldr if unlinked so we can eject
         FreeLibraryAndExitThread(this_module, 0);
     }
 }

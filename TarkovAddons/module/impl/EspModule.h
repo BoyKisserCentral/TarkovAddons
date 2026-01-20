@@ -288,7 +288,6 @@ public:
                 const int side = player_instance.get_method<int(*)(Il2CppObject*)>("get_Side", 0)(
                     player_instance.get_instance());
 
-                // TODO: fix this
                 player_type type;
                 if (side == 1 || side == 2)
                 {

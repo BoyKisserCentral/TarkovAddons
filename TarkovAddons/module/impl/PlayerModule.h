@@ -6,6 +6,38 @@
 #include "../../config/FloatSliderValue.h"
 #include "../../il2cpp/Il2CppObjectInstance.h"
 
+static bool do_speed;
+static int speed_value;
+
+using fixed_update_sig = void(*)(Il2CppObject*);
+static fixed_update_sig o_player_camera_controller_fixed_update = nullptr;
+
+inline void hk_player_camera_controller_fixed_update(Il2CppObject* instance)
+{
+    Il2CppObjectInstance controller_instance(instance);
+    const auto main_player_object = controller_instance.get_method<Il2CppObject*(
+        *)(Il2CppObject*)>("get_Player", 0)(instance);
+
+    // if player is not loaded yet
+    if (main_player_object == nullptr) return;
+
+    Il2CppObjectInstance main_player(main_player_object);
+    Il2CppObjectInstance character_controller(main_player.get_field<Il2CppObject*>("_characterController"));
+    unity::vector3 velocity = character_controller.get_method<unity::vector3(*)(Il2CppObject*)>("get_velocity", 0)(
+        character_controller.get_instance());
+    velocity.x /= 100;
+    velocity.y = 0;
+    velocity.z /= 100;
+    for (int i = 0; i < speed_value; ++i)
+    {
+        character_controller.get_method<int(*)(Il2CppObject*, unity::vector3, float)>("Move", 2)(
+            character_controller.get_instance(), velocity, 100.0f);
+    }
+
+
+    o_player_camera_controller_fixed_update(instance);
+}
+
 class PlayerModule : Module
 {
 public:
@@ -51,10 +83,35 @@ public:
         add_trader_rep_impl();
     }, "Add Trader Rep"));
 
+    SelectValue* skill_select = conf(new SelectValue(0, {
+                                                         "Pistol", "Revolver", "SMG", "Assault", "Shotgun", "Sniper",
+                                                         "LMG", "HMG", "Launcher", "AttachedLauncher", "Misc", "Melee",
+                                                         "DMR", "Throwing", "AimDrills", "RecoilControl",
+                                                         "TroubleShooting", "Perception", "Attention", "Intellect",
+                                                         "Immunity", "Charisma", "Memory", "Endurance", "Strength",
+                                                         "Vitality", "Health", "Metabolism", "StressResistance",
+                                                         "Sniping", "CovertMovement", "ProneMovement", "LightVests",
+                                                         "HeavyVests", "WeaponModding", "AdvancedModding",
+                                                         "Lockpicking", "Surgery", "Search", "WeaponTreatment",
+                                                         "MagDrills", "Freetrading", "Barter", "Crafting",
+                                                         "HideoutManagement", "BearAssaultoperations", "BearAuthority",
+                                                         "BearAksystems", "BearHeavycaliber", "BearRawpower",
+                                                         "UsecArsystems", "UsecDeepweaponmodding",
+                                                         "UsecLongrangeoptics", "UsecNegotiations", "UsecTactics"
+                                                     }, "Skill"));
+    IntSliderValue* skill_level = conf(new IntSliderValue(51, 0, 51, "Skill Level"));
+    ActionRowValue* set_skill = conf(new ActionRowValue([&]
+    {
+        set_skill_impl();
+    }, "Set Skill"));
+
+    CheckboxValue* speed_hack = conf(new CheckboxValue(false, "Speed Hack"));
+    IntSliderValue* speed = conf(new IntSliderValue(2, 1, 10, "Speed"));
 
     bool queue_add_exp = false;
     bool queue_add_fence_rep = false;
     bool queue_add_trader_rep = false;
+    bool queue_set_skill = false;
 
     void add_exp_impl()
     {
@@ -72,6 +129,12 @@ public:
     {
         if (!game_state::is_in_raid) return;
         queue_add_trader_rep = true;
+    }
+
+    void set_skill_impl()
+    {
+        if (!game_state::is_in_raid) return;
+        queue_set_skill = true;
     }
 
     void draw_overlay(ImDrawList* draw_list) override
@@ -202,9 +265,32 @@ public:
                     trader_info, trader_rep_amount->get_value() + standing);
             }
         }
+
+        if (queue_set_skill)
+        {
+            queue_set_skill = false;
+
+            Il2CppObjectInstance skill_controller(
+                main_player.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Skills", 0)(main_player.get_instance()));
+
+            Il2CppObjectInstance skill_instance(
+                skill_controller.get_field<Il2CppObject*>(skill_select->get_selected().c_str()));
+
+            skill_instance.get_method<void(*)(Il2CppObject*, int)>("SetLevel", 1)(
+                skill_instance.get_instance(), skill_level->get_value());
+        }
+
+        do_speed = speed_hack->get_value();
+        speed_value = speed->get_value();
     }
 
     void init() override
     {
+        Il2CppImage* image = il2utils::resolve_image("Assembly-CSharp.dll");
+        // hook game world update
+        const Il2CppClass* game_world_class = il2utils::resolve_class(
+            image, "EFT.CameraControl", "PlayerCameraController");
+        il2utils::hook_method(game_world_class, "FixedUpdate", 0, hk_player_camera_controller_fixed_update,
+                              &o_player_camera_controller_fixed_update);
     }
 };

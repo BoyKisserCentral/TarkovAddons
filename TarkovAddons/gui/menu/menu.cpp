@@ -90,7 +90,7 @@ namespace menu
         if (is_active())
         {
             constexpr float width = 700;
-            constexpr float height = 400;
+            constexpr float height = 500;
             ImGui::SetNextWindowSize(ImVec2(width * scale_factor, height * scale_factor), ImGuiCond_Once);
             ImGui::SetNextWindowBgAlpha(1.0f);
             if (ImGui::Begin(globals::get_display_title().c_str(), &draw_imgui,
