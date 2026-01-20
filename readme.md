@@ -4,7 +4,6 @@
 - more shaders!!!!!
 - fix the menu focus issue
 - fix eject ldr unlinking
-- fix backpack insertion for item adder
 - fix pmc/scav esp difference
 - fix scoped w2s
 - ingame item list + search

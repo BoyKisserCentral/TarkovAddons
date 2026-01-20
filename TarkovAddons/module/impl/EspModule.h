@@ -21,8 +21,6 @@ public:
 
     CheckboxValue* players = conf(new CheckboxValue(true, "Players"));
     ColorpickerValue* player_color = conf(new ColorpickerValue({1, 0, 0, 1}, "Player Color"));
-    CheckboxValue* player_scavs = conf(new CheckboxValue(true, "Player Scavs"));
-    ColorpickerValue* player_scav_color = conf(new ColorpickerValue({1, 0, 0, 1}, "Player Scav Color"));
     CheckboxValue* npc = conf(new CheckboxValue(true, "NPC"));
     ColorpickerValue* npc_color = conf(new ColorpickerValue({1, 1, 0, 1}, "NPC Color"));
 
@@ -51,7 +49,7 @@ public:
     struct player
     {
         std::string name;
-        player_type type;
+        bool pmc;
         unity::vector3 pos3d;
     };
 
@@ -135,7 +133,7 @@ public:
         // player esp
         if (players->get_value())
         {
-            for (const auto& [name, type, pos3d] : player_store)
+            for (const auto& [name, pmc, pos3d] : player_store)
             {
                 unity::vector3 screen_pos = eft_api::world_to_screen(cam, pos3d);
                 if (!eft_api::is_visible(screen_pos)) continue;
@@ -143,23 +141,16 @@ public:
                 std::string text = std::string("[").append(std::to_string(static_cast<int>(distance))).append("m] ").
                                                     append(name);
 
-                switch (type)
+                switch (pmc) // NOLINT(clang-diagnostic-switch-bool)
                 {
-                case player_type::pmc:
+                case true:
                     if (!players->get_value()) break;
                     imgui_addons::centered_text(draw_list, menu::get_hud_font(),
                                                 static_cast<float>(font_size->get_value()) * menu::get_scale_factor(),
                                                 {screen_pos.x, screen_pos.y + 10 * menu::get_scale_factor()},
                                                 player_color->get_value(), text);
                     break;
-                case player_type::player_scav:
-                    if (!player_scavs->get_value()) break;
-                    imgui_addons::centered_text(draw_list, menu::get_hud_font(),
-                                                static_cast<float>(font_size->get_value()) * menu::get_scale_factor(),
-                                                {screen_pos.x, screen_pos.y + 10 * menu::get_scale_factor()},
-                                                player_scav_color->get_value(), text);
-                    break;
-                case player_type::npc:
+                case false:
                     if (!npc->get_value()) break;
                     imgui_addons::centered_text(draw_list, menu::get_hud_font(),
                                                 static_cast<float>(font_size->get_value()) * menu::get_scale_factor(),
@@ -283,27 +274,16 @@ public:
                 // skip ourselves
                 if (nickname == main_nickname) continue;
 
-                const bool is_ai = player_instance.get_method<bool(*)(Il2CppObject*)>("get_IsAI", 0)(
-                    player_instance.get_instance());
-                const int side = player_instance.get_method<int(*)(Il2CppObject*)>("get_Side", 0)(
-                    player_instance.get_instance());
-
-                player_type type;
-                if (side == 1 || side == 2)
-                {
-                    type = player_type::pmc;
-                }
-                else
-                {
-                    if (is_ai) type = player_type::npc;
-                    else type = player_type::player_scav;
-                }
-
                 Il2CppObject* player_game_object = unity::component_get_game_object(player_instance.get_instance());
                 Il2CppObject* player_transform = unity::gameobject_get_transform(player_game_object);
 
+                Il2CppObjectInstance esp_profile(get_profile(main_player.get_instance()));
+                Il2CppObjectInstance esp_profile_info(esp_profile.get_field<Il2CppObject*>("Info"));
+                const int side = esp_profile_info.get_method<int(*)(Il2CppObject*)>("get_Side", 0)(
+                    esp_profile.get_instance());
+
                 new_players.push_back({
-                    .name = nickname, .type = type, .pos3d = unity::transform_get_pos(player_transform)
+                    .name = nickname, .pmc = side == 1 || side == 2, .pos3d = unity::transform_get_pos(player_transform)
                 });
             }
 

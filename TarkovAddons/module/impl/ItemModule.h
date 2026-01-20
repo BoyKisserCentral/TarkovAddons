@@ -125,7 +125,7 @@ public:
     }
 
     TextboxValue* item_id = conf(new TextboxValue("", "Item Id"));
-    SelectValue* item_slot = conf(new SelectValue(3, {
+    SelectValue* item_slot = conf(new SelectValue(4, {
                                                       "Primary Weapon", "Secondary Weapon", "Holster", "Melee",
                                                       "Backpack", "Secure Container", "Rig", "Armor", "Pockets",
                                                       "Eyewear", "FaceCover", "Headwear", "Earpiece", "Dog-tag",
@@ -134,7 +134,7 @@ public:
     IntSliderValue* amount = conf(new IntSliderValue(1, 1, 100, "Item Amount"));
     CheckboxValue* infinite = conf(new CheckboxValue(false, "Infinite"));
     CheckboxValue* fir = conf(new CheckboxValue(true, "Found in Raid"));
-    // CheckboxValue* replace_slot = conf(new CheckboxValue(false, "Replace Slot"));
+    CheckboxValue* replace_slot = conf(new CheckboxValue(false, "Replace Slot"));
 
     ActionRowValue* create_item = conf(new ActionRowValue([&]
         {
@@ -228,7 +228,7 @@ public:
                 equipment.get_method<Il2CppObject*(*)(Il2CppObject*, int)>("GetSlot", 1)(
                     equipment.get_instance(), item_slot->get_value()));
 
-            /*
+
             if (!replace_slot->get_value())
             {
                 Il2CppObject* item_ptr = equipment_slot.get_method<Il2CppObject*(*)(Il2CppObject*)>(
@@ -239,19 +239,26 @@ public:
                 {
                     Il2CppObjectInstance slot_item_instance(item_ptr);
                     const auto grids = slot_item_instance.get_field<Il2CppArray*>("Grids");
-                    if (grids->max_length > 0)
+                    for (size_t i = 0; i < grids->max_length; ++i)
                     {
-                        Il2CppObjectInstance grid0(reinterpret_cast<Il2CppObject**>(&grids->data)[0]);
-                        grid0.get_method<Il2CppObject*(*)(Il2CppObject*, Il2CppObject*, int)>("AddAnywhere", 2)(
-                            grid0.get_instance(), item, 0);
+                        Il2CppObjectInstance grid(reinterpret_cast<Il2CppObject**>(&grids->data)[0]);
+                        Il2CppObject* space = grid.get_method<Il2CppObject*(
+                            *)(Il2CppObject*, Il2CppObject*)>("FindFreeSpace", 1)(grid.get_instance(), item);
+
+                        if (!space) continue;
+
+                        grid.get_method<void(*)(Il2CppObject*, Il2CppObject*, Il2CppObject*)>("PlaceItem", 2)(
+                            grid.get_instance(), item, space);
+
+                        break;
                     }
                 }
             }
             else
-            {*/
-            equipment_slot.get_method<Il2CppObject*(*)(Il2CppObject*, Il2CppObject*)>("Add", 1)(
-                equipment_slot.get_instance(), item);
-            // }
+            {
+                equipment_slot.get_method<Il2CppObject*(*)(Il2CppObject*, Il2CppObject*)>("Add", 1)(
+                    equipment_slot.get_instance(), item);
+            }
 
             Il2CppObjectInstance item_instance(item);
 
