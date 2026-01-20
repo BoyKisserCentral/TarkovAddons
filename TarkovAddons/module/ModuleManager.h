@@ -2,6 +2,7 @@
 #include <functional>
 
 #include "Module.h"
+#include "impl/AimbotModule.h"
 #include "impl/ChamsModule.h"
 #include "impl/ConfigModule.h"
 #include "impl/EspModule.h"
@@ -64,6 +65,9 @@ public:
 
     // register modules here
 
+    // aimbot
+    AimbotModule* aimbot_module = module(new AimbotModule());
+    
     // visuals
     EspModule* esp_module = module(new EspModule());
     ChamsModule* chams_module = module(new ChamsModule());

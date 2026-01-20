@@ -6,8 +6,6 @@
 #include "../../il2cpp/Il2CppObjectInstance.h"
 #include "../../il2cpp/unity.h"
 
-class IntSliderValue;
-
 class EspModule : Module
 {
 public:

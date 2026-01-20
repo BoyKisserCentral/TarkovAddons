@@ -192,6 +192,7 @@
         <ClInclude Include="module\common_hooks.h"/>
         <ClInclude Include="module\eft_api.h"/>
         <ClInclude Include="module\game_state.h"/>
+        <ClInclude Include="module\impl\AimbotModule.h"/>
         <ClInclude Include="module\impl\ChamsModule.h"/>
         <ClInclude Include="module\impl\ConfigModule.h"/>
         <ClInclude Include="module\impl\EspModule.h"/>

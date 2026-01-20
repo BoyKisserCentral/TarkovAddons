@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "../eft_api.h"
 #include "../game_state.h"
 #include "../Module.h"
 #include "../ModuleCategory.h"
