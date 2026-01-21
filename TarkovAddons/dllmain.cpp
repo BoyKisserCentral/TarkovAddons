@@ -72,14 +72,17 @@ namespace
         common_hooks::init();
         logger::info("Loaded Default Features");
 
-        // wait for eject input
+        // eject will be back once ldr unlink attempt is added
+        ExitThread(0);
+
+        // wait for eject input 
         while (true)
         {
             Sleep(50);
             if (GetAsyncKeyState(VK_DELETE) & 1)
             {
                 logger::info("Ejecting");
-                // break;
+                break;
             }
         }
 

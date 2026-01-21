@@ -51,7 +51,7 @@ LRESULT WINAPI dxhook::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 {
     if (!menu::is_active())
     {
-        return CallWindowProcW(oWndProc, GetActiveWindow(), msg, wParam, lParam);
+        oWndProc(hWnd, msg, wParam, lParam);
     }
     ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
     return true;
