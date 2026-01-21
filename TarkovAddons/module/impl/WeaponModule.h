@@ -69,26 +69,21 @@ public:
                     if (mag_object)
                     {
                         Il2CppObjectInstance magazine(mag_object);
-                        int current_count = weapon.get_method<int(*)(Il2CppObject*)>("GetCurrentMagazineCount", 0)(
+                        const int current_count = weapon.get_method<int(
+                            *)(Il2CppObject*)>("GetCurrentMagazineCount", 0)(
                             weapon.get_instance());
-                        int max_count = weapon.get_method<int(*)(Il2CppObject*)>("GetMaxMagazineCount", 0)(
+                        const int max_count = weapon.get_method<int(*)(Il2CppObject*)>("GetMaxMagazineCount", 0)(
                             weapon.get_instance());
 
-                        if (current_count != 0 && current_count < max_count)
+                        if (current_count != 0)
                         {
                             Il2CppObjectInstance first_real_ammo(magazine.get_method<Il2CppObject*(*)(Il2CppObject*)>(
                                 "FirstRealAmmo", 0)(magazine.get_instance()));
 
-                            first_real_ammo.set_field("StackObjectsCount", max_count);
+                            const int max_stack_size = first_real_ammo.get_method<int(*)(Il2CppObject*)>(
+                                "get_StackMaxSize", 0)(first_real_ammo.get_instance());
 
-                            /*
-                            Il2CppObjectInstance cartridges(
-                                magazine.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Cartridges", 0)(
-                                    magazine.get_instance()));
-
-                            cartridges.get_method<Il2CppObject*(*)(Il2CppObject*, Il2CppObject*, bool)>("Add", 2)(
-                                cartridges.get_instance(), first_real_ammo, false);
-                                */
+                            first_real_ammo.set_field("StackObjectsCount", min(max_count, max_stack_size));
                         }
                     }
                 }

@@ -283,11 +283,13 @@ public:
 
     void init() override
     {
-        Il2CppImage* image = il2utils::resolve_image("Assembly-CSharp.dll");
-        // hook game world update
-        const Il2CppClass* game_world_class = il2utils::resolve_class(
+        const Il2CppImage* image = il2utils::resolve_image("Assembly-CSharp.dll");
+
+        // need a fixed update here so speed hack is consistent, this is a good one i found with access to player
+        const Il2CppClass* player_camera_controller_class = il2utils::resolve_class(
             image, "EFT.CameraControl", "PlayerCameraController");
-        il2utils::hook_method(game_world_class, "FixedUpdate", 0, hk_player_camera_controller_fixed_update,
+        il2utils::hook_method(player_camera_controller_class, "FixedUpdate", 0,
+                              hk_player_camera_controller_fixed_update,
                               &o_player_camera_controller_fixed_update);
     }
 };
