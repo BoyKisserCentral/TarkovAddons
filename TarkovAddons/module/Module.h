@@ -5,6 +5,7 @@
 
 #include "ModuleCategory.h"
 #include "../config/ConfigValue.h"
+#include "../il2cpp/Il2CppObjectInstance.h"
 #include "../il2cpp/libil2cpp/il2cpp-api-types.h"
 
 class Module
@@ -29,7 +30,8 @@ public:
 
     virtual void draw_overlay(ImDrawList* draw_list) = 0;
     virtual void application_update() = 0;
-    virtual void gameworld_update(const Il2CppClass* game_world_class, Il2CppObject* game_world) = 0;
+    virtual void gameworld_update(const Il2CppClass* game_world_class, Il2CppObjectInstance game_world_instance,
+                                  Il2CppObjectInstance main_player) = 0;
     virtual void init() = 0;
 
     std::vector<ConfigValue*> config_values = std::vector<ConfigValue*>();

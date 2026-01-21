@@ -30,7 +30,8 @@ public:
     {
     }
 
-    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObject* game_world) override
+    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObjectInstance game_world_instance,
+                                  Il2CppObjectInstance main_player) override
     {
     }
 

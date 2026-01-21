@@ -3,23 +3,67 @@
 
 namespace eft_api
 {
-    inline unity::vector3 world_to_screen(Il2CppObject* camera, unity::vector3 world_point)
+    inline unity::vector3 world_to_screen(Il2CppObject* camera, unity::vector3 world_point, float zoom)
     {
         unity::vector3 screen_point = unity::world_to_screen_point(camera, world_point);
         const float scale = menu::get_height() / static_cast<float>(unity::camera_pixel_height(camera));
         screen_point.y = menu::get_height() - screen_point.y * scale;
         screen_point.x *= scale;
+
+        if (zoom > 1)
+        {
+            screen_point.x -= menu::get_width() / 2;
+            screen_point.y -= menu::get_height() / 2;
+            screen_point.x *= zoom;
+            screen_point.y *= zoom;
+            screen_point.x += menu::get_width() / 2;
+            screen_point.y += menu::get_height() / 2;
+        }
+
         return screen_point;
     }
 
-    /*
-    inline unity::vector3 world_to_screen_scoped(Il2CppObject* camera, Il2CppObject* scope_camera,
-                                                 unity::vector3 world_point)
+    inline float get_scope_zoom(Il2CppObjectInstance& player)
     {
-        if (!scope_camera) return world_to_screen(camera, world_point);
-        return world_to_screen(scope_camera, world_point);
+        Il2CppObject* hands_controller_object = player.get_method<Il2CppObject*(
+            *)(Il2CppObject*)>("get_HandsController", 0)(player.get_instance());
+
+        if (hands_controller_object && std::string(hands_controller_object->klass->name) == "FirearmController")
+        {
+            Il2CppObjectInstance firearm_controller(hands_controller_object);
+
+            if (!firearm_controller.get_method<bool(*)(Il2CppObject*)>("get_IsAiming", 0)(hands_controller_object))
+                return 1;
+
+            Il2CppObjectInstance procedural_weapon_animation(
+                player.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_ProceduralWeaponAnimation", 0)(
+                    player.get_instance()));
+
+            Il2CppObjectInstance current_scope(
+                procedural_weapon_animation.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_CurrentScope", 0)(
+                    procedural_weapon_animation.get_instance()));
+
+            auto mod_ptr = current_scope.get_field<Il2CppObject*>("Mod");
+
+            if (!mod_ptr) return 1;
+
+            Il2CppObjectInstance sight_component(mod_ptr);
+            const float zoom = sight_component.get_field<float>("ScopeZoomValue");
+            auto adjustable_data = Il2CppObjectInstance(
+                sight_component.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_AdjustableOpticData", 0)(
+                    sight_component.get_instance()));
+
+            // not a magnifying scope
+            if (zoom == 0.0f) return 1;
+
+            const auto minmax = adjustable_data.get_field<unity::vector3>("MinMaxFov");
+
+            // calculate the actual zoom by dividing by max fov;
+            return minmax.x / zoom;
+        }
+
+        return 1;
     }
-    */
 
     inline bool is_visible(const unity::vector3& screen_point)
     {

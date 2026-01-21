@@ -42,9 +42,6 @@ namespace
             Sleep(50);
         }
 
-        // make sure its fully loaded
-        Sleep(100);
-
         // load il2cpp offsets
         il2cpp_offsets::init();
 

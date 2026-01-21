@@ -68,7 +68,7 @@ public:
         if (magic_bullet->get_value() && show_target->get_value())
         {
             if (!(target_store.x == 0 && target_store.y == 0)) // NOLINT(clang-diagnostic-float-equal)
-                if (unity::vector3 screen_pos = eft_api::world_to_screen(cam, target_store);
+                if (unity::vector3 screen_pos = eft_api::world_to_screen(cam, target_store, game_state::current_zoom);
                     eft_api::is_visible(screen_pos))
                 {
                     draw_list->AddCircleFilled({screen_pos.x, screen_pos.y},
@@ -82,19 +82,9 @@ public:
     {
     }
 
-    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObject* game_world) override
+    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObjectInstance game_world_instance,
+                          Il2CppObjectInstance main_player) override
     {
-        // no esp outside of raid
-        if (!game_state::is_in_raid) return;
-
-        Il2CppObjectInstance game_world_instance(game_world);
-        const auto main_player_object = game_world_instance.get_field<Il2CppObject*>("MainPlayer");
-
-        // if player is not loaded yet
-        if (main_player_object == nullptr) return;
-
-        Il2CppObjectInstance main_player(main_player_object);
-
         const auto get_profile = main_player.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Profile", 0);
         Il2CppObjectInstance main_profile(get_profile(main_player.get_instance()));
 
@@ -140,7 +130,7 @@ public:
                 const unity::vector3 head_pos = bifacial_transform_head.get_method<unity::vector3(
                     *)(Il2CppObject*)>("get_position", 0)(bifacial_transform_head.get_instance());
 
-                unity::vector3 screen_pos = eft_api::world_to_screen(cam, head_pos);
+                unity::vector3 screen_pos = eft_api::world_to_screen(cam, head_pos, game_state::current_zoom);
                 if (!eft_api::is_visible(screen_pos)) continue;
                 screen_pos.z = 0;
 

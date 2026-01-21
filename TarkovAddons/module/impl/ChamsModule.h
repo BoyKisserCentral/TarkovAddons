@@ -70,19 +70,9 @@ public:
     {
     }
 
-    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObject* game_world) override
+    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObjectInstance game_world_instance,
+                          Il2CppObjectInstance main_player) override
     {
-        // no chams outside of raid
-        if (!game_state::is_in_raid) return;
-
-        Il2CppObjectInstance game_world_instance(game_world);
-        auto main_player_object = game_world_instance.get_field<Il2CppObject*>("MainPlayer");
-
-        // if player is not loaded yet
-        if (main_player_object == nullptr) return;
-
-        Il2CppObjectInstance main_player(main_player_object);
-
         const Il2CppImage* unity_image = il2utils::resolve_image("UnityEngine.CoreModule.dll");
 
         const auto get_profile = main_player.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Profile", 0);

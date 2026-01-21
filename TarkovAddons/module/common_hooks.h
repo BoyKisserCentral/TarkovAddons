@@ -42,12 +42,25 @@ namespace common_hooks
 
     static void hk_game_world_update(Il2CppObject* instance)
     {
-        ModuleManager::get_instance()->apply([instance](Module* m)
-        {
-            m->gameworld_update(game_world_class, instance);
-        });
-
         o_game_world_update(instance);
+
+        // no modules outside of raid
+        if (!game_state::is_in_raid) return;
+
+        Il2CppObjectInstance game_world_instance(instance);
+        const auto main_player_object = game_world_instance.get_field<Il2CppObject*>("MainPlayer");
+
+        // if player is not loaded yet
+        if (main_player_object == nullptr) return;
+
+        Il2CppObjectInstance main_player(main_player_object);
+
+        game_state::current_zoom = eft_api::get_scope_zoom(main_player);
+
+        ModuleManager::get_instance()->apply([game_world_instance, main_player](Module* m)
+        {
+            m->gameworld_update(game_world_class, game_world_instance, main_player);
+        });
     }
 
     inline void init()

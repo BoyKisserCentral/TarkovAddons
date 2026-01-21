@@ -73,7 +73,7 @@ public:
         {
             for (const auto& [name, status, pos3d] : exfil_store)
             {
-                unity::vector3 screen_pos = eft_api::world_to_screen(cam, pos3d);
+                unity::vector3 screen_pos = eft_api::world_to_screen(cam, pos3d, game_state::current_zoom);
                 if (!eft_api::is_visible(screen_pos)) continue;
                 const float distance = my_pos.distance(pos3d);
 
@@ -118,7 +118,7 @@ public:
         {
             for (const auto& [name, pos3d] : transits_store)
             {
-                unity::vector3 screen_pos = eft_api::world_to_screen(cam, pos3d);
+                unity::vector3 screen_pos = eft_api::world_to_screen(cam, pos3d, game_state::current_zoom);
                 if (!eft_api::is_visible(screen_pos)) continue;
                 const float distance = my_pos.distance(pos3d);
                 std::string text = std::string("[").append(std::to_string(static_cast<int>(distance))).append("m] ").
@@ -135,7 +135,7 @@ public:
         {
             for (const auto& [name, pmc, pos3d] : player_store)
             {
-                unity::vector3 screen_pos = eft_api::world_to_screen(cam, pos3d);
+                unity::vector3 screen_pos = eft_api::world_to_screen(cam, pos3d, game_state::current_zoom);
                 if (!eft_api::is_visible(screen_pos)) continue;
                 const float distance = my_pos.distance(pos3d);
                 std::string text = std::string("[").append(std::to_string(static_cast<int>(distance))).append("m] ").
@@ -166,18 +166,9 @@ public:
     {
     }
 
-    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObject* game_world) override
+    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObjectInstance game_world_instance,
+                          Il2CppObjectInstance main_player) override
     {
-        // no esp outside of raid
-        if (!game_state::is_in_raid) return;
-
-        Il2CppObjectInstance game_world_instance(game_world);
-        auto main_player_object = game_world_instance.get_field<Il2CppObject*>("MainPlayer");
-
-        // if player is not loaded yet
-        if (main_player_object == nullptr) return;
-
-        Il2CppObjectInstance main_player(main_player_object);
         const auto main_player_game_object = unity::component_get_game_object(main_player.get_instance());
         const auto main_player_transform = unity::gameobject_get_transform(main_player_game_object);
         my_pos = unity::transform_get_pos(main_player_transform);

@@ -34,17 +34,9 @@ public:
     {
     }
 
-    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObject* game_world) override
+    void gameworld_update(const Il2CppClass* game_world_class, Il2CppObjectInstance game_world_instance,
+                          Il2CppObjectInstance main_player) override
     {
-        // no world outside of raid
-        if (!game_state::is_in_raid) return;
-
-        Il2CppObjectInstance game_world_instance(game_world);
-        const auto main_player_object = game_world_instance.get_field<Il2CppObject*>("MainPlayer");
-
-        // if player is not loaded yet
-        if (main_player_object == nullptr) return;
-
         if (queue_unlock_doors)
         {
             queue_unlock_doors = false;
