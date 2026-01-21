@@ -39,11 +39,9 @@ namespace eft_api
                 player.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_ProceduralWeaponAnimation", 0)(
                     player.get_instance()));
 
-            Il2CppObjectInstance current_scope(
-                procedural_weapon_animation.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_CurrentScope", 0)(
-                    procedural_weapon_animation.get_instance()));
-
-            auto mod_ptr = current_scope.get_field<Il2CppObject*>("Mod");
+            const auto mod_ptr = procedural_weapon_animation.get_method<Il2CppObject*(*)(Il2CppObject*)>(
+                "get_CurrentAimingMod", 0)(
+                procedural_weapon_animation.get_instance());
 
             if (!mod_ptr) return 1;
 
