@@ -13,15 +13,15 @@ public:
     {
     }
 
-    CheckboxValue* extracts = conf(new CheckboxValue(true, "Extracts"));
+    CheckboxValue* extracts = conf(new CheckboxValue(false, "Extracts"));
     ColorpickerValue* extracts_color = conf(new ColorpickerValue({0, 1, 0, 1}, "Extract Color"));
 
-    CheckboxValue* transits = conf(new CheckboxValue(true, "Transits"));
+    CheckboxValue* transits = conf(new CheckboxValue(false, "Transits"));
     ColorpickerValue* transits_color = conf(new ColorpickerValue({1, 1, 0, 1}, "Transit Color"));
 
-    CheckboxValue* players = conf(new CheckboxValue(true, "Players"));
+    CheckboxValue* players = conf(new CheckboxValue(false, "Players"));
     ColorpickerValue* player_color = conf(new ColorpickerValue({1, 0, 0, 1}, "Player Color"));
-    CheckboxValue* npc = conf(new CheckboxValue(true, "NPC"));
+    CheckboxValue* npc = conf(new CheckboxValue(false, "NPC"));
     ColorpickerValue* npc_color = conf(new ColorpickerValue({1, 1, 0, 1}, "NPC Color"));
 
     IntSliderValue* font_size = conf(new IntSliderValue(12, 8, 36, "Font Size"));

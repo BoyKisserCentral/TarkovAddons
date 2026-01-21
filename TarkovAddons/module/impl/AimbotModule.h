@@ -3,6 +3,7 @@
 #include "../game_state.h"
 #include "../Module.h"
 #include "../../config/ColorpickerValue.h"
+#include "../../config/FloatSliderValue.h"
 #include "../../il2cpp/il2utils.h"
 #include "../../il2cpp/Il2CppObjectInstance.h"
 #include "../../il2cpp/unity.h"
@@ -51,6 +52,7 @@ public:
 
     CheckboxValue* magic_bullet = conf(new CheckboxValue(false, "Magic Bullet"));
     CheckboxValue* show_target = conf(new CheckboxValue(true, "Show Target"));
+    FloatSliderValue* target_size = conf(new FloatSliderValue(3, 1, 10, "Target Size"));
     ColorpickerValue* target_color = conf(new ColorpickerValue({1, 0, 1, 1}, "Target Color"));
 
     void draw_overlay(ImDrawList* draw_list) override
@@ -69,7 +71,8 @@ public:
                 if (unity::vector3 screen_pos = eft_api::world_to_screen(cam, target_store);
                     eft_api::is_visible(screen_pos))
                 {
-                    draw_list->AddCircleFilled({screen_pos.x, screen_pos.y}, 4 * menu::get_scale_factor(),
+                    draw_list->AddCircleFilled({screen_pos.x, screen_pos.y},
+                                               target_size->get_value() * menu::get_scale_factor(),
                                                ImGui::GetColorU32(target_color->get_value()));
                 }
         }

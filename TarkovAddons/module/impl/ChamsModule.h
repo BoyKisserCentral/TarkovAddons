@@ -23,14 +23,14 @@ public:
     {
     }
 
-    CheckboxValue* player_chams = conf(new CheckboxValue(true, "Player Chams"));
+    CheckboxValue* player_chams = conf(new CheckboxValue(false, "Player Chams"));
     CheckboxValue* gear_chams = conf(new CheckboxValue(false, "Gear Chams"));
     SelectValue* chams_type = conf(new SelectValue(0, {
                                                        "Solid", "Wireframe", "Forcefield", "Glass", "Lava"
                                                    }, "Type"));
     ColorpickerValue* visible_color = conf(new ColorpickerValue({0, 1, 0, 1}, "Visible Color"));
     ColorpickerValue* invisible_color = conf(new ColorpickerValue({1, 0, 0, 1}, "Invisible Color"));
-    CheckboxValue* weapon_chams = conf(new CheckboxValue(true, "Weapon Chams"));
+    CheckboxValue* weapon_chams = conf(new CheckboxValue(false, "Weapon Chams"));
     SelectValue* weapon_chams_type = conf(
         new SelectValue(0, {"Solid", "Wireframe", "Forcefield", "Glass", "Lava"}, "Weapon Type"));
     ColorpickerValue* weapon_chams_color = conf(new ColorpickerValue({.5, 0, .5, .5}, "Weapon Color"));
