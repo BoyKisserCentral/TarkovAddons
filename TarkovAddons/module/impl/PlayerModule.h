@@ -14,26 +14,23 @@ static fixed_update_sig o_player_camera_controller_fixed_update = nullptr;
 
 inline void hk_player_camera_controller_fixed_update(Il2CppObject* instance)
 {
-    Il2CppObjectInstance controller_instance(instance);
-    const auto main_player_object = controller_instance.get_method<Il2CppObject*(
-        *)(Il2CppObject*)>("get_Player", 0)(instance);
-
-    // if player is not loaded yet
-    if (main_player_object == nullptr) return;
-
-    Il2CppObjectInstance main_player(main_player_object);
-    Il2CppObjectInstance character_controller(main_player.get_field<Il2CppObject*>("_characterController"));
-    unity::vector3 velocity = character_controller.get_method<unity::vector3(*)(Il2CppObject*)>("get_velocity", 0)(
-        character_controller.get_instance());
-    velocity.x /= 100;
-    velocity.y = 0;
-    velocity.z /= 100;
-    for (int i = 0; i < speed_value; ++i)
+    if (do_speed)
     {
-        character_controller.get_method<int(*)(Il2CppObject*, unity::vector3, float)>("Move", 2)(
-            character_controller.get_instance(), velocity, 100.0f);
+        Il2CppObjectInstance controller_instance(instance);
+        Il2CppObjectInstance main_player(controller_instance.get_method<Il2CppObject*(
+            *)(Il2CppObject*)>("get_Player", 0)(instance));
+        Il2CppObjectInstance character_controller(main_player.get_field<Il2CppObject*>("_characterController"));
+        unity::vector3 velocity = character_controller.get_method<unity::vector3(*)(Il2CppObject*)>("get_velocity", 0)(
+            character_controller.get_instance());
+        velocity.x /= 100;
+        velocity.y = 0;
+        velocity.z /= 100;
+        for (int i = 0; i < speed_value; ++i)
+        {
+            character_controller.get_method<int(*)(Il2CppObject*, unity::vector3, float)>("Move", 2)(
+                character_controller.get_instance(), velocity, 100.0f);
+        }
     }
-
 
     o_player_camera_controller_fixed_update(instance);
 }

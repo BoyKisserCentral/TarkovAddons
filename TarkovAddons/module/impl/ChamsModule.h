@@ -154,6 +154,10 @@ public:
                               unity::color{visible.x, visible.y, visible.z, visible.w});
                     set_color(material_instance.get_instance(), color_occluded,
                               unity::color{visible.x, visible.y, visible.z, visible.w});
+
+                    // set texture to null so all the shaders look right
+                    material_instance.get_method<void(*)(Il2CppObject*, Il2CppObject*)>("set_mainTexture", 1)(
+                        material_instance.get_instance(), nullptr);
                 }
             }
         }
@@ -245,6 +249,10 @@ public:
                                       unity::color{visible.x, visible.y, visible.z, visible.w});
                             set_color(material_instance.get_instance(), color_occluded,
                                       unity::color{invisible.x, invisible.y, invisible.z, invisible.w});
+
+                            // set texture to null so all the shaders look right
+                            material_instance.get_method<void(*)(Il2CppObject*, Il2CppObject*)>("set_mainTexture", 1)(
+                                material_instance.get_instance(), nullptr);
                         }
                     }
                 }
