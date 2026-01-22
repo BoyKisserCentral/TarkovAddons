@@ -45,6 +45,16 @@ public:
         return {this->options[this->value_]};
     }
 
+    std::vector<const char*> get_options()
+    {
+        return this->options;
+    }
+
+    void set_options(const std::vector<const char*>& opts)
+    {
+        this->options = opts;
+    }
+
 private:
     int value_;
     int def_;

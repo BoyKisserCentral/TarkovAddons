@@ -8,6 +8,7 @@
 #include "impl/EspModule.h"
 #include "impl/ItemModule.h"
 #include "impl/PlayerModule.h"
+#include "impl/QuestModule.h"
 #include "impl/WatermarkModule.h"
 #include "impl/WeaponModule.h"
 #include "impl/WorldModule.h"
@@ -78,6 +79,7 @@ public:
     WorldModule* world_module = module(new WorldModule());
     WeaponModule* weapon_module = module(new WeaponModule());
     ItemModule* item_module = module(new ItemModule());
+    QuestModule* quest_module = module(new QuestModule());
 
     // misc
     WatermarkModule* watermark_module = module(new WatermarkModule());

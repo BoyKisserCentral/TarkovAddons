@@ -198,6 +198,7 @@
         <ClInclude Include="module\impl\EspModule.h"/>
         <ClInclude Include="module\impl\ItemModule.h"/>
         <ClInclude Include="module\impl\PlayerModule.h"/>
+        <ClInclude Include="module\impl\QuestModule.h"/>
         <ClInclude Include="module\impl\WatermarkModule.h"/>
         <ClInclude Include="module\impl\WeaponModule.h"/>
         <ClInclude Include="module\impl\WorldModule.h"/>
