@@ -26,16 +26,16 @@ public:
     CheckboxValue* player_chams = conf(new CheckboxValue(false, "Player Chams"));
     CheckboxValue* gear_chams = conf(new CheckboxValue(false, "Gear Chams"));
     SelectValue* chams_type = conf(new SelectValue(0, {
-                                                       "Solid", "Wireframe", "Forcefield", "Glass", "Lava"
+                                                       "Solid", "Wireframe", "Forcefield", "Glass", "Lava", "Outline"
                                                    }, "Type"));
-    ColorpickerValue* visible_color = conf(new ColorpickerValue({0, 1, 0, 1}, "Visible Color"));
-    ColorpickerValue* invisible_color = conf(new ColorpickerValue({1, 0, 0, 1}, "Invisible Color"));
+    ColorpickerValue* visible_color = conf(new ColorpickerValue({0, 1, 1, 0.75}, "Visible Color"));
+    ColorpickerValue* invisible_color = conf(new ColorpickerValue({0, 0, 1, 0.75}, "Invisible Color"));
     CheckboxValue* weapon_chams = conf(new CheckboxValue(false, "Weapon Chams"));
     SelectValue* weapon_chams_type = conf(
-        new SelectValue(0, {"Solid", "Wireframe", "Forcefield", "Glass", "Lava"}, "Weapon Type"));
-    ColorpickerValue* weapon_chams_color = conf(new ColorpickerValue({.5, 0, .5, .5}, "Weapon Color"));
+        new SelectValue(5, {"Solid", "Wireframe", "Forcefield", "Glass", "Lava", "Outline"}, "Weapon Type"));
+    ColorpickerValue* weapon_chams_color = conf(new ColorpickerValue({0.7f, 0.7f, 0.7f, 1}, "Weapon Color"));
     CheckboxValue* include_scope = conf(new CheckboxValue(false, "Include Scope"));
-    CheckboxValue* include_arms = conf(new CheckboxValue(true, "Include Arms"));
+    CheckboxValue* include_arms = conf(new CheckboxValue(false, "Include Arms"));
 
     std::set<size_t> applied_players = std::set<size_t>();
 
@@ -57,6 +57,9 @@ public:
         case 4:
             return
                 "lava.shader";
+        case 5:
+            return
+                "outline.shader";
         default:
             return "";
         }
