@@ -4,7 +4,6 @@
 #include "../Module.h"
 #include "../ModuleCategory.h"
 #include "../../config/ActionRowValue.h"
-#include "../../config/ColorpickerValue.h"
 #include "../../config/SelectValue.h"
 #include "../../util/logger.h"
 
@@ -42,7 +41,7 @@ public:
     }
 
     void gameworld_update(const Il2CppClass* game_world_class, Il2CppObjectInstance game_world_instance,
-                                  Il2CppObjectInstance main_player) override
+                          Il2CppObjectInstance main_player) override
     {
     }
 
@@ -53,7 +52,7 @@ public:
 
     static void load_config(const std::string& config)
     {
-        logger::info("Loading Config " + config);
+        if (globals::verbose) logger::info("Loading Config " + config);
 
         // try to create folder
         char* p_value;
@@ -96,7 +95,7 @@ public:
 
     static void save_config(const std::string& config)
     {
-        logger::info("Saving Config " + config);
+        if (globals::verbose) logger::info("Saving Config " + config);
 
         // try to create folder
         char* p_value;

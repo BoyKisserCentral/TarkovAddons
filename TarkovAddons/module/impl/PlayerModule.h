@@ -215,6 +215,8 @@ public:
 
             session_counters.get_method<void(*)(Il2CppObject*, int, Il2CppObject*)>("AddInt", 2)(
                 session_counters.get_instance(), exp_amount->get_value(), reason);
+
+            if (globals::verbose) logger::info("Added EXP");
         }
 
         if (queue_add_fence_rep)
@@ -226,6 +228,8 @@ public:
 
             loyalty_data.get_method<void(*)(Il2CppObject*, double, int)>("KillAsSavage", 2)(
                 loyalty_data.get_instance(), fence_rep_amount->get_value(), fence_rep_source->get_value());
+
+            if (globals::verbose) logger::info("Added Fence Rep");
         }
 
         if (queue_add_trader_rep)
@@ -251,6 +255,8 @@ public:
                 trader_info_instance.get_method<void(*)(Il2CppObject*, double)>("SetStanding", 1)(
                     trader_info, trader_rep_amount->get_value() + standing);
             }
+
+            if (globals::verbose) logger::info("Added Trader Rep");
         }
 
         if (queue_set_skill)
@@ -260,11 +266,22 @@ public:
             Il2CppObjectInstance skill_controller(
                 main_player.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Skills", 0)(main_player.get_instance()));
 
-            Il2CppObjectInstance skill_instance(
-                skill_controller.get_field<Il2CppObject*>(skill_select->get_selected().c_str()));
+            if (const auto skill_ptr = skill_controller.get_field<Il2CppObject*>(skill_select->get_selected().c_str()))
+            {
+                Il2CppObjectInstance skill_instance(skill_ptr);
 
-            skill_instance.get_method<void(*)(Il2CppObject*, int)>("SetLevel", 1)(
-                skill_instance.get_instance(), skill_level->get_value());
+                skill_instance.get_method<void(*)(Il2CppObject*, int)>("SetLevel", 1)(
+                    skill_instance.get_instance(), skill_level->get_value());
+
+                if (globals::verbose)
+                    logger::info(
+                        "Set Skill: " + skill_select->get_selected() + " Level: " +
+                        std::to_string(skill_level->get_value()));
+            }
+            else
+            {
+                if (globals::verbose) logger::warn("Skill not found: " + skill_select->get_selected());
+            }
         }
 
         do_speed = speed_hack->get_value();

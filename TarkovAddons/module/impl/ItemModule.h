@@ -106,10 +106,11 @@ static get_grid_size_sig o_get_grid_size;
 
 inline UINT64 hk_get_grid_size(Il2CppObject* instance, Il2CppString* profile_id)
 {
-    UINT64 res = o_get_grid_size(instance, profile_id);
+    const UINT64 res = o_get_grid_size(instance, profile_id);
 
     if (big_grid)
     {
+        if (globals::verbose) logger::info("Changing Transit Grid Size");
         // intvec2(0xF, 0xF)
         return 0xF0000000F;
     }
@@ -204,6 +205,8 @@ public:
                                                     il2cpp::il2cpp_string_new(generate_mongo_id().c_str()),
                                                     il2cpp::il2cpp_string_new(item_id->get().c_str()), nullptr);
 
+            if (globals::verbose) logger::info("Created Item: " + item_id->get());
+
             Il2CppObjectInstance inventory_controller(
                 main_player.get_field<Il2CppObject*>("_inventoryController"));
 
@@ -239,6 +242,8 @@ public:
 
                         grid.get_method<void(*)(Il2CppObject*, Il2CppObject*, Il2CppObject*)>("PlaceItem", 2)(
                             grid.get_instance(), item, space);
+
+                        if (globals::verbose) logger::info("Placed Item");
 
                         break;
                     }

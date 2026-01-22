@@ -5,3 +5,6 @@
 - ingame item list + search
 - achievement completer
 - fly hack
+
+wont fix:
+- dual scope like hamr and eotech

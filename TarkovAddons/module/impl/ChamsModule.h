@@ -2,7 +2,6 @@
 #include <set>
 
 #include "../eft_api.h"
-#include "../game_state.h"
 #include "../../config/IntSliderValue.h"
 #include "../../il2cpp/il2utils.h"
 #include "../../il2cpp/Il2CppObjectInstance.h"

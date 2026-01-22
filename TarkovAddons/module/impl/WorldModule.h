@@ -3,7 +3,6 @@
 #include "../Module.h"
 #include "../ModuleCategory.h"
 #include "../../config/CheckboxValue.h"
-#include "../../config/FloatSliderValue.h"
 #include "../../il2cpp/Il2CppObjectInstance.h"
 #include "../../il2cpp/unity.h"
 
@@ -51,6 +50,7 @@ public:
                 // 2 = Shut
                 door_instance.get_method<void(*)(Il2CppObject*, int)>("set_DoorState", 1)(
                     door_instance.get_instance(), 2);
+                if (globals::verbose) logger::info("Unlocked Doors");
             }
         }
     }

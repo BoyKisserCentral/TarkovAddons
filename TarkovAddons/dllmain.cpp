@@ -72,6 +72,10 @@ namespace
         common_hooks::init();
         logger::info("Loaded Default Features");
 
+        std::cout << "\n";
+        logger::info("Menu Key: Insert");
+        std::cout << "\n";
+
         // eject will be back once ldr unlink attempt is added
         ExitThread(0);
 
