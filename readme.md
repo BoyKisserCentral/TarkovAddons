@@ -1,10 +1,8 @@
-﻿todo:
+﻿known issues:
+- pattern not found - restart game
+- crash on start - try again
+- item spawner fails - make sure the item can go into the given inventory
+- quest completer fails - quest completer does not work for dailies/weeklies
 
-- fix eject ldr unlinking
-- fix pmc/scav esp difference
-- ingame item list + search
-- achievement completer
-- fly hack
-
-wont fix:
-- dual scope like hamr and eotech
+won't fix:
+- dual scope like hamr and eotech esp scaling
