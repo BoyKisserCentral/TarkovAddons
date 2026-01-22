@@ -29,7 +29,6 @@ public:
     enum class player_type : char
     {
         pmc,
-        player_scav,
         npc,
     };
 
@@ -244,7 +243,7 @@ public:
 
         // player esp
         auto new_players = std::vector<player>();
-        if (players->get_value())
+        if (players->get_value() || npc->get_value())
         {
             Il2CppArray* alive_players = game_world_instance.get_field<unity::list*>("AllAlivePlayersList")->
                                                              m_p_list_array;
@@ -268,13 +267,28 @@ public:
                 Il2CppObject* player_game_object = unity::component_get_game_object(player_instance.get_instance());
                 Il2CppObject* player_transform = unity::gameobject_get_transform(player_game_object);
 
-                Il2CppObjectInstance esp_profile(get_profile(main_player.get_instance()));
-                Il2CppObjectInstance esp_profile_info(esp_profile.get_field<Il2CppObject*>("Info"));
-                const int side = esp_profile_info.get_method<int(*)(Il2CppObject*)>("get_Side", 0)(
-                    esp_profile.get_instance());
+                // check if player has a dogtag to see if it's a pmc, yes this is actually the best way i found to do this
+                Il2CppObjectInstance inventory_controller(
+                    player_instance.get_field<Il2CppObject*>("_inventoryController"));
+
+                Il2CppObjectInstance inventory(
+                    inventory_controller.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Inventory", 0)(
+                        inventory_controller.get_instance()));
+
+                Il2CppObjectInstance equipment(
+                    inventory.get_field<Il2CppObject*>("Equipment"));
+
+                // 13 = Dogtag
+                Il2CppObjectInstance equipment_slot(
+                    equipment.get_method<Il2CppObject*(*)(Il2CppObject*, int)>("GetSlot", 1)(
+                        equipment.get_instance(), 13));
+
+                Il2CppObject* item_ptr = equipment_slot.get_method<Il2CppObject*(*)(Il2CppObject*)>(
+                    "get_ContainedItem", 0)(
+                    equipment_slot.get_instance());
 
                 new_players.push_back({
-                    .name = nickname, .pmc = side == 1 || side == 2, .pos3d = unity::transform_get_pos(player_transform)
+                    .name = nickname, .pmc = item_ptr != nullptr, .pos3d = unity::transform_get_pos(player_transform)
                 });
             }
 

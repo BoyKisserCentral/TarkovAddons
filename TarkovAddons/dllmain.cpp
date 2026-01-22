@@ -19,7 +19,7 @@ namespace
     {
         AllocConsole();
         errno_t _ = freopen_s(&console, "CONOUT$", "w", stdout);
-        SetConsoleTitleA(globals::get_display_title().c_str());
+        SetConsoleTitleA(std::string(globals::get_display_title() + " | " + globals::credits).c_str());
     }
 
     void hide_console()
@@ -34,6 +34,7 @@ namespace
         if (globals::console) show_console();
 
         logger::info(globals::get_display_title());
+        logger::info(globals::credits);
 
         // wait for GameAssembly.dll to load
         logger::info("Waiting for GameAssembly.dll");
@@ -72,6 +73,9 @@ namespace
         common_hooks::init();
         logger::info("Loaded Default Features");
 
+        std::cout << "\n";
+        logger::warn(
+            "This is FREE software! If you paid for this software or completed some task to obtain it, you were scammed!");
         std::cout << "\n";
         logger::info("Menu Key: Insert");
         std::cout << "\n";

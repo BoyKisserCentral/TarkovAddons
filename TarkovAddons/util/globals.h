@@ -4,7 +4,8 @@
 namespace globals
 {
     const std::string prod_name("TarkovAddons");
-    const std::string prod_ver("v0.1");
+    const std::string prod_ver("v1.0");
+    const std::string credits("By: stanuwu/stangaming");
     constexpr bool console = true;
     constexpr bool verbose = false;
 
