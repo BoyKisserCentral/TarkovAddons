@@ -19,12 +19,14 @@ namespace always_on
             location_instance.set_field("ForceOnlineRaidInPVE", false);
             location_instance.set_field("ForceOfflineRaidInPVE", true);
 
+            /*
             // unlock location
             location_instance.set_field("Enabled", true);
             location_instance.set_field("Locked", false);
             location_instance.set_field("LockedByQuest", false);
             location_instance.set_field("RequiredPlayerLevelMin", 0);
-            location_instance.set_field("RequiredPlayerLevelMax", INT_MAX);
+            location_instance.set_field("RequiredPlayerLevelMax", 80);
+            */
         }
         o_set_selected_location(_this, location);
     }

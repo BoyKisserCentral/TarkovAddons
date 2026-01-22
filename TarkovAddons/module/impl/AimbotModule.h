@@ -62,7 +62,6 @@ public:
 
         // find cameras
         Il2CppObject* cam = unity::get_current_camera();
-        // Il2CppObject* scope_cam = unity::get_named_camera("BaseOpticCamera(Clone)");
 
         // show target
         if (magic_bullet->get_value() && show_target->get_value())

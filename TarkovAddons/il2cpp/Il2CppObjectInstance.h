@@ -46,15 +46,15 @@ public:
     template <typename T>
     void set_field(const char* name, T value)
     {
-        FieldInfo* field = il2utils::resolve_field(this->clazz_, name);
-        *reinterpret_cast<T*>(reinterpret_cast<char*>(instance_) + field->offset) = value;
+        const FieldInfo* field = il2utils::resolve_field(this->clazz_, name);
+        *reinterpret_cast<T*>(reinterpret_cast<UINT64>(instance_) + field->offset) = value; // NOLINT(performance-no-int-to-ptr)
     }
 
     template <typename T>
     T get_field(const char* name)
     {
-        FieldInfo* field = il2utils::resolve_field(this->clazz_, name);
-        return *reinterpret_cast<T*>(reinterpret_cast<char*>(instance_) + field->offset);
+        const FieldInfo* field = il2utils::resolve_field(this->clazz_, name);
+        return *reinterpret_cast<T*>(reinterpret_cast<UINT64>(instance_) + field->offset); // NOLINT(performance-no-int-to-ptr)
     }
 
     template <typename T>
