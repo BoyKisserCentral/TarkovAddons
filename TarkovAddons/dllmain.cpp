@@ -59,7 +59,7 @@ namespace
 
         // dxhook and menu
         logger::info("Hooking Present");
-        if (!dxhook::init()) logger::error("Present Hook Failed");
+        if (!dxhook::init(this_module)) logger::error("Present Hook Failed");
         else logger::info("Hooked Present");
 
         // init modules

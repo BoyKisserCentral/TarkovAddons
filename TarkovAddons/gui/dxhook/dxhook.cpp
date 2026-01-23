@@ -1,6 +1,8 @@
 ﻿#include "dxhook.h"
 
 #include <cstdint>
+#include <ios>
+#include <iostream>
 
 #include "../menu/menu.h"
 #include <Windows.h>
@@ -57,31 +59,43 @@ LRESULT WINAPI dxhook::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
     return true;
 }
 
-bool dxhook::init()
+HWND dxhook::create_window(const HMODULE this_module)
 {
-    // create a window
-    WNDCLASSEX windowClass;
-    windowClass.cbSize = sizeof(WNDCLASSEX);
-    windowClass.style = CS_HREDRAW | CS_VREDRAW;
-    windowClass.lpfnWndProc = DefWindowProc;
-    windowClass.cbClsExtra = 0;
-    windowClass.cbWndExtra = 0;
-    windowClass.hInstance = GetModuleHandle(nullptr);
-    windowClass.hIcon = nullptr;
-    windowClass.hCursor = nullptr;
-    windowClass.hbrBackground = nullptr;
-    windowClass.lpszMenuName = nullptr;
-    windowClass.lpszClassName = L"DXWindow";
-    windowClass.hIconSm = nullptr;
-    ::RegisterClassEx(&windowClass);
-    HWND window = ::CreateWindow(windowClass.lpszClassName, L"DXWindow", WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, NULL,
-                                 NULL, windowClass.hInstance, NULL);
+    WNDCLASSEX window_class;
+    window_class.cbSize = sizeof(WNDCLASSEX);
+    window_class.style = CS_HREDRAW | CS_VREDRAW;
+    window_class.lpfnWndProc = DefWindowProc;
+    window_class.cbClsExtra = 0;
+    window_class.cbWndExtra = 0;
+    window_class.hInstance = this_module;
+    window_class.hIcon = nullptr;
+    window_class.hCursor = nullptr;
+    window_class.hbrBackground = nullptr;
+    window_class.lpszMenuName = nullptr;
+    window_class.lpszClassName = L"DXWindow";
+    window_class.hIconSm = nullptr;
+    RegisterClassEx(&window_class);
+    const HWND window = CreateWindowA("DXWindow",
+                                      "DXWindow",
+                                      WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+                                      0, 0,
+                                      100, 100,
+                                      nullptr,
+                                      nullptr,
+                                      this_module,
+                                      nullptr);
 
-    return dx12_setup(windowClass, window) || dx11_setup(windowClass, window);
+    UnregisterClass(L"DXWindow", this_module);
+    return window;
+}
+
+bool dxhook::init(const HMODULE this_module)
+{
+    return dx12_setup(this_module) || dx11_setup(this_module);
 }
 
 
-bool dxhook::dx12_setup(const WNDCLASSEX& window_class, HWND window)
+bool dxhook::dx12_setup(const HMODULE this_module)
 {
     // dx 12 setup
     // get all needed instances and api
@@ -90,50 +104,41 @@ bool dxhook::dx12_setup(const WNDCLASSEX& window_class, HWND window)
     if ((lib_dxgi = ::GetModuleHandle(L"dxgi.dll")) == nullptr || (lib_d_3d12 = ::GetModuleHandle(L"d3d12.dll")) ==
         nullptr)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
         return false;
     }
 
-    void* CreateDXGIFactory;
-    if ((CreateDXGIFactory = GetProcAddress(lib_dxgi, "CreateDXGIFactory")) == nullptr) // NOLINT(clang-diagnostic-microsoft-cast)
+    void* create_dxgi_factory;
+    if ((create_dxgi_factory = GetProcAddress(lib_dxgi, "CreateDXGIFactory")) == nullptr) // NOLINT(clang-diagnostic-microsoft-cast)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
         return false;
     }
 
     IDXGIFactory* factory;
-    if (reinterpret_cast<long(__stdcall*)(const IID&, void**)>(CreateDXGIFactory)(
+    if (reinterpret_cast<long(__stdcall*)(const IID&, void**)>(create_dxgi_factory)(
         __uuidof(IDXGIFactory), reinterpret_cast<void**>(&factory)) < 0) // NOLINT(clang-diagnostic-language-extension-token)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
+        logger::error("FACTORY FAIL");
         return false;
     }
 
     IDXGIAdapter* adapter;
     if (factory->EnumAdapters(0, &adapter) == DXGI_ERROR_NOT_FOUND)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
+        logger::error("ADAPTER FAIL");
         return false;
     }
 
-    void* D3D12CreateDevice;
-    if ((D3D12CreateDevice = GetProcAddress(lib_d_3d12, "D3D12CreateDevice")) == nullptr) // NOLINT(clang-diagnostic-microsoft-cast)
+    void* d_3d12_create_device;
+    if ((d_3d12_create_device = GetProcAddress(lib_d_3d12, "D3D12CreateDevice")) == nullptr) // NOLINT(clang-diagnostic-microsoft-cast)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
         return false;
     }
 
     ID3D12Device* device;
-    if (reinterpret_cast<long(__stdcall*)(IUnknown*, D3D_FEATURE_LEVEL, const IID&, void**)>(D3D12CreateDevice)(
+    if (reinterpret_cast<long(__stdcall*)(IUnknown*, D3D_FEATURE_LEVEL, const IID&, void**)>(d_3d12_create_device)(
         adapter, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), reinterpret_cast<void**>(&device)) < 0) // NOLINT(clang-diagnostic-language-extension-token)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
+        logger::error("DEVICE FAIL");
         return false;
     }
 
@@ -147,8 +152,7 @@ bool dxhook::dx12_setup(const WNDCLASSEX& window_class, HWND window)
     if (device->CreateCommandQueue(&queue_desc, __uuidof(ID3D12CommandQueue), reinterpret_cast<void**>(&command_queue)) < // NOLINT(clang-diagnostic-language-extension-token)
         0)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
+        logger::error("COMMAND QUEUE FAIL");
         return false;
     }
 
@@ -156,8 +160,7 @@ bool dxhook::dx12_setup(const WNDCLASSEX& window_class, HWND window)
     if (device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), // NOLINT(clang-diagnostic-language-extension-token)
                                        reinterpret_cast<void**>(&command_allocator)) < 0)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
+        logger::error("COMMAND ALLOCATOR FAIL");
         return false;
     }
 
@@ -165,8 +168,15 @@ bool dxhook::dx12_setup(const WNDCLASSEX& window_class, HWND window)
     if (device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, command_allocator, nullptr,
                                   __uuidof(ID3D12GraphicsCommandList), reinterpret_cast<void**>(&command_list)) < 0) // NOLINT(clang-diagnostic-language-extension-token)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
+        logger::error("COMMAND LIST FAIL");
+        return false;
+    }
+
+    const HWND window = create_window(this_module);
+    if (!window)
+    {
+        logger::error("WINDOW FAIL");
+        std::cout << std::hex << GetLastError() << "\n";
         return false;
     }
 
@@ -187,21 +197,21 @@ bool dxhook::dx12_setup(const WNDCLASSEX& window_class, HWND window)
     sample_desc.Count = 1;
     sample_desc.Quality = 0;
 
-    DXGI_SWAP_CHAIN_DESC swapChainDesc;
-    swapChainDesc.BufferDesc = buffer_desc;
-    swapChainDesc.SampleDesc = sample_desc;
-    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    swapChainDesc.BufferCount = 2;
-    swapChainDesc.OutputWindow = window;
-    swapChainDesc.Windowed = 1;
-    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-    swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+    DXGI_SWAP_CHAIN_DESC swap_chain_desc;
+    swap_chain_desc.BufferDesc = buffer_desc;
+    swap_chain_desc.SampleDesc = sample_desc;
+    swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swap_chain_desc.BufferCount = 2;
+    swap_chain_desc.OutputWindow = window;
+    swap_chain_desc.Windowed = 1;
+    swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
     IDXGISwapChain* swap_chain;
-    if (factory->CreateSwapChain(command_queue, &swapChainDesc, &swap_chain) < 0)
+    if (factory->CreateSwapChain(command_queue, &swap_chain_desc, &swap_chain) < 0)
     {
+        logger::error("SWAPCHAIN FAIL");
         DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
         return false;
     }
 
@@ -230,7 +240,6 @@ bool dxhook::dx12_setup(const WNDCLASSEX& window_class, HWND window)
     swap_chain = nullptr;
 
     DestroyWindow(window);
-    ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
 
     auto target_present = reinterpret_cast<PVOID*>(g_methods_table[PRESENT_INDEX_12]); // NOLINT(performance-no-int-to-ptr)
     auto target_execute_command_lists = reinterpret_cast<PVOID*>(g_methods_table[LIST_INDEX]); // NOLINT(performance-no-int-to-ptr)
@@ -249,6 +258,7 @@ bool dxhook::dx12_setup(const WNDCLASSEX& window_class, HWND window)
 
     if (DetourTransactionCommit() != NO_ERROR)
     {
+        logger::error("DETOUR FAIL");
         free(g_methods_table);
         g_methods_table = nullptr;
         return false;
@@ -258,83 +268,112 @@ bool dxhook::dx12_setup(const WNDCLASSEX& window_class, HWND window)
     return true;
 }
 
-bool dxhook::dx11_setup(const WNDCLASSEX& window_class, HWND window)
+bool dxhook::dx11_setup(const HMODULE this_module)
 {
     // dx 11 setup
     // get all needed instances and api
     HMODULE lib_d_3d11;
     if ((lib_d_3d11 = ::GetModuleHandle(L"d3d11.dll")) == nullptr)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
         return false;
     }
 
-    void* d_3d11_create_device_and_swap_chain;
-    if ((d_3d11_create_device_and_swap_chain = reinterpret_cast<void*>(GetProcAddress(
-        lib_d_3d11, "D3D11CreateDeviceAndSwapChain"))) == nullptr)
+    void* d_3d11_create_device;
+    if ((d_3d11_create_device = reinterpret_cast<void*>(GetProcAddress(
+        lib_d_3d11, "D3D11CreateDevice"))) == nullptr)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
         return false;
     }
 
-    // set up our swapchain
+    // create our device
+    constexpr D3D_FEATURE_LEVEL feature_levels[] = {
+        D3D_FEATURE_LEVEL_11_0,
+        D3D_FEATURE_LEVEL_10_1,
+    };
+
+    ID3D11Device* device11 = nullptr;
+    ID3D11DeviceContext* context11 = nullptr;
+
     D3D_FEATURE_LEVEL feature_level;
-    constexpr D3D_FEATURE_LEVEL feature_levels[] = {D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_11_0};
+    const HRESULT device_res = reinterpret_cast<HRESULT(*)(IDXGIAdapter*, D3D_DRIVER_TYPE, HMODULE, UINT,
+                                                           CONST D3D_FEATURE_LEVEL*, UINT, UINT, ID3D11Device**,
+                                                           D3D_FEATURE_LEVEL*,
+                                                           ID3D11DeviceContext**)>(d_3d11_create_device)(
+        nullptr,
+        D3D_DRIVER_TYPE_HARDWARE,
+        nullptr,
+        D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+        feature_levels,
+        2,
+        D3D11_SDK_VERSION,
+        &device11,
+        &feature_level,
+        &context11);
 
-    DXGI_RATIONAL refresh_rate11;
-    refresh_rate11.Numerator = 60;
-    refresh_rate11.Denominator = 1;
-
-    DXGI_MODE_DESC buffer_desc11;
-    buffer_desc11.Width = 100;
-    buffer_desc11.Height = 100;
-    buffer_desc11.RefreshRate = refresh_rate11;
-    buffer_desc11.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    buffer_desc11.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-    buffer_desc11.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-    DXGI_SAMPLE_DESC sample_desc11;
-    sample_desc11.Count = 1;
-    sample_desc11.Quality = 0;
-
-    DXGI_SWAP_CHAIN_DESC swap_chain_desc11;
-    swap_chain_desc11.BufferDesc = buffer_desc11;
-    swap_chain_desc11.SampleDesc = sample_desc11;
-    swap_chain_desc11.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    swap_chain_desc11.BufferCount = 1;
-    swap_chain_desc11.OutputWindow = window;
-    swap_chain_desc11.Windowed = 1;
-    swap_chain_desc11.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-    swap_chain_desc11.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-    IDXGISwapChain* swap_chain11;
-    ID3D11Device* device11;
-    ID3D11DeviceContext* context11;
-
-    if (reinterpret_cast<long(__stdcall*)(
-        IDXGIAdapter*,
-        D3D_DRIVER_TYPE,
-        HMODULE,
-        UINT,
-        const D3D_FEATURE_LEVEL*,
-        UINT,
-        UINT,
-        const DXGI_SWAP_CHAIN_DESC*,
-        IDXGISwapChain**,
-        ID3D11Device**,
-        D3D_FEATURE_LEVEL*,
-        ID3D11DeviceContext**)>(d_3d11_create_device_and_swap_chain)(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
-                                                                     feature_levels, 2, D3D11_SDK_VERSION,
-                                                                     &swap_chain_desc11,
-                                                                     &swap_chain11, &device11, &feature_level,
-                                                                     &context11) < 0)
+    if (device_res < 0)
     {
-        DestroyWindow(window);
-        ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
+        logger::error("DEVICE FAIL");
+        std::cout << std::hex << device_res << "\n";
         return false;
     }
+
+    IDXGIDevice* dxgi_device;
+    const HRESULT res_dxgi_device = device11->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<PVOID*>(&dxgi_device)); // NOLINT(clang-diagnostic-language-extension-token)
+    if (res_dxgi_device < 0)
+    {
+        logger::error("DXGI DEVICE FAIL");
+        std::cout << std::hex << res_dxgi_device << "\n";
+        return false;
+    }
+
+    IDXGIAdapter* dxgi_adapter;
+    const HRESULT res_adapter = dxgi_device->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<PVOID*>(&dxgi_adapter)); // NOLINT(clang-diagnostic-language-extension-token)
+    if (res_adapter < 0)
+    {
+        logger::error("ADAPTER FAIL");
+        std::cout << std::hex << res_adapter << "\n";
+        return false;
+    }
+
+    IDXGIFactory2* factory;
+    const HRESULT res_factory = dxgi_adapter->GetParent(__uuidof(IDXGIFactory2), reinterpret_cast<PVOID*>(&factory)); // NOLINT(clang-diagnostic-language-extension-token)
+    if (res_factory < 0)
+    {
+        logger::error("FACTORY FAIL");
+        std::cout << std::hex << res_factory << "\n";
+        return false;
+    }
+
+
+    DXGI_SWAP_CHAIN_DESC1 swap_chain_desc1 = {};
+    swap_chain_desc1.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+    swap_chain_desc1.BufferCount = 2;
+    swap_chain_desc1.Width = 100;
+    swap_chain_desc1.Height = 100;
+    swap_chain_desc1.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    swap_chain_desc1.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swap_chain_desc1.SampleDesc.Count = 1;
+    swap_chain_desc1.SampleDesc.Quality = 0;
+
+    const HWND window = create_window(this_module);
+    if (!window)
+    {
+        logger::error("WINDOW FAIL");
+        std::cout << std::hex << GetLastError() << "\n";
+        return false;
+    }
+
+    IDXGISwapChain1* swap_chain11;
+    const HRESULT res_swapchain = factory->CreateSwapChainForHwnd(device11, window, &swap_chain_desc1, nullptr, nullptr,
+                                                                  &swap_chain11);
+    if (res_swapchain < 0)
+    {
+        logger::error("SWAPCHAIN FAIL");
+        std::cout << std::hex << res_swapchain << "\n";
+        DestroyWindow(window);
+        return false;
+    }
+
 
     // yoink the method table
     g_methods_table = static_cast<UINT64*>(calloc(205, sizeof(UINT64)));
@@ -353,10 +392,9 @@ bool dxhook::dx11_setup(const WNDCLASSEX& window_class, HWND window)
     context11 = nullptr;
 
     DestroyWindow(window);
-    ::UnregisterClass(window_class.lpszClassName, window_class.hInstance);
 
     // hook present func
-    auto target = reinterpret_cast<PVOID*>(g_methods_table[PRESENT_INDEX_11]); // NOLINT(performance-no-int-to-ptr)
+    const auto target = reinterpret_cast<PVOID*>(g_methods_table[PRESENT_INDEX_11]); // NOLINT(performance-no-int-to-ptr)
     oPresent11 = reinterpret_cast<HRESULT (*)(void*, UINT, UINT)>(target);
 
     DetourTransactionBegin();
@@ -367,6 +405,9 @@ bool dxhook::dx11_setup(const WNDCLASSEX& window_class, HWND window)
 
     if (DetourTransactionCommit() != NO_ERROR)
     {
+        logger::error("DETOUR FAIL");
+        free(g_methods_table);
+        g_methods_table = nullptr;
         return false;
     }
 
