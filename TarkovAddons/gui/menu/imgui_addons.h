@@ -105,6 +105,24 @@ namespace imgui_addons
         return res;
     }
 
+    static bool int_textbot(const std::string& label, int* v)
+    {
+        ImGui::PushID(label.c_str());
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        std::string just_text = label.substr(0, label.find("##"));
+        ImGui::Text(just_text.c_str()); // NOLINT(clang-diagnostic-format-security)
+
+        float width = 200 * menu::get_scale_factor();
+        ImGui::SameLine(ImGui::GetWindowWidth() - width - 4 * menu::get_scale_factor());
+        ImGui::SetNextItemWidth(width);
+        auto res = ImGui::InputInt(std::string("##" + label).c_str(), v);
+
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        ImGui::PopID();
+
+        return res;
+    }
+
     static bool textbox(const std::string& label, std::string* v)
     {
         ImGui::PushID(label.c_str());

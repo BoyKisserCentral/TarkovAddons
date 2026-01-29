@@ -30,6 +30,8 @@ namespace
 
     [[noreturn]] void init(HMODULE this_module)
     {
+        Sleep(1000);
+
         // alloc console
         if (globals::console) show_console();
 
@@ -47,7 +49,7 @@ namespace
         il2cpp_offsets::init();
 
         // wait for dx window
-        while (!GetModuleHandle(L"d3d11.dll") && !(GetModuleHandle(L"d3d12.dll") && GetModuleHandle(L"dxgi.dll")))
+        while (!GetModuleHandle(L"d3d11.dll") || !GetModuleHandle(L"dxgi.dll"))
         {
             Sleep(50);
         }

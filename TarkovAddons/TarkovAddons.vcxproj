@@ -170,6 +170,7 @@
         <ClInclude Include="config\ConfigValue.h"/>
         <ClInclude Include="config\FloatSliderValue.h"/>
         <ClInclude Include="config\IntSliderValue.h"/>
+        <ClInclude Include="config\IntTextboxValue.h"/>
         <ClInclude Include="config\SelectValue.h"/>
         <ClInclude Include="config\TextboxValue.h"/>
         <ClInclude Include="gui\dxhook\dxhook.h"/>

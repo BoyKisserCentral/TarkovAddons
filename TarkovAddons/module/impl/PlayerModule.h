@@ -9,6 +9,8 @@
 static bool do_speed;
 static int speed_value;
 
+static bool should_survive;
+
 using fixed_update_sig = void(*)(Il2CppObject*);
 static fixed_update_sig o_player_camera_controller_fixed_update = nullptr;
 
@@ -35,6 +37,18 @@ inline void hk_player_camera_controller_fixed_update(Il2CppObject* instance)
     o_player_camera_controller_fixed_update(instance);
 }
 
+using local_game_stop_sig = void(*)(Il2CppObject*, Il2CppString*, int, Il2CppString*, float);
+
+static local_game_stop_sig o_local_game_stop;
+
+inline void hk_local_game_stop(Il2CppObject* instance, Il2CppString* profile_id, int exit_status,
+                               Il2CppString* exit_name, float delay)
+{
+    if (should_survive) exit_status = 0; // Survived
+
+    o_local_game_stop(instance, profile_id, exit_status, exit_name, delay);
+}
+
 class PlayerModule : Module
 {
 public:
@@ -44,8 +58,7 @@ public:
 
     CheckboxValue* god_mode = conf(new CheckboxValue(false, "God Mode"));
     CheckboxValue* infinite_stamina = conf(new CheckboxValue(false, "Infinite Stamina"));
-    CheckboxValue* no_hunger = conf(new CheckboxValue(false, "No Hunger"));
-    CheckboxValue* no_thirst = conf(new CheckboxValue(false, "No Thirst"));
+    CheckboxValue* no_hunger_thirst = conf(new CheckboxValue(false, "No Hunger/Thirst"));
     CheckboxValue* instant_search = conf(new CheckboxValue(false, "Instant Search"));
 
     SelectValue* exp_type = conf(new SelectValue(0, {
@@ -104,6 +117,8 @@ public:
 
     CheckboxValue* speed_hack = conf(new CheckboxValue(false, "Speed Hack"));
     IntSliderValue* speed = conf(new IntSliderValue(2, 1, 10, "Speed"));
+
+    CheckboxValue* always_survive = conf(new CheckboxValue(false, "Always Survive"));
 
     bool queue_add_exp = false;
     bool queue_add_fence_rep = false;
@@ -176,14 +191,10 @@ public:
             health_controller.set_field("_fallSafeHeight", 99999999.0f);
         }
 
-        if (no_hunger->get_value())
+        if (no_hunger_thirst->get_value())
         {
             health_controller.get_method<void(*)(Il2CppObject*, float)>("ChangeEnergy", 1)(
                 health_controller.get_instance(), 100.0f);
-        }
-
-        if (no_thirst->get_value())
-        {
             health_controller.get_method<void(*)(Il2CppObject*, float)>("ChangeHydration", 1)(
                 health_controller.get_instance(), 100.0f);
         }
@@ -286,6 +297,8 @@ public:
 
         do_speed = speed_hack->get_value();
         speed_value = speed->get_value();
+
+        should_survive = always_survive->get_value();
     }
 
     void init() override
@@ -298,5 +311,9 @@ public:
         il2utils::hook_method(player_camera_controller_class, "FixedUpdate", 0,
                               hk_player_camera_controller_fixed_update,
                               &o_player_camera_controller_fixed_update);
+
+        // local game stop
+        const Il2CppClass* local_game = il2utils::resolve_class(image, "EFT", "LocalGame");
+        il2utils::hook_method(local_game, "Stop", 4, hk_local_game_stop, &o_local_game_stop);
     }
 };
