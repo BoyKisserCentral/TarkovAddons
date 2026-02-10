@@ -19,10 +19,7 @@ namespace always_on
             // force offline raid
             location_instance.set_field("ForceOnlineRaidInPVE", false);
             location_instance.set_field("ForceOfflineRaidInPVE", true);
-            location_instance.set_field("Locked", false);
-            location_instance.set_field("LockedByQuest", false);
             location_instance.set_field("AccessKeys", nullptr);
-            location_instance.set_field("DisabledForScav", false);
 
             // No Terminal
             if (il2utils::conv_string(location_instance.get_field<Il2CppString*>("Name")) == "Terminal") return false;

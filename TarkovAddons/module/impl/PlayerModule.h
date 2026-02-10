@@ -85,7 +85,7 @@ public:
                                                           "LIGHT_KEEPER_TRADER", "RAGMAN_TRADER",
                                                           "ARENA_MANAGER_TRADER", "PEACEKEEPER", "SKIER",
                                                           "PRAPOR_TRADER", "JAEGER_TRADER", "MECHANIC_TRADER",
-                                                          "TERAPEVT_TRADER"
+                                                          "TERAPEVT_TRADER", "BTR_TRADER"
                                                       }, "Trader"));
     FloatSliderValue* trader_rep_amount = conf(new FloatSliderValue(0.1f, 0, 5, "Trader Rep Amount"));
     ActionRowValue* add_trader_rep = conf(new ActionRowValue([&]
