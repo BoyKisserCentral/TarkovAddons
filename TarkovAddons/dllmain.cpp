@@ -30,7 +30,7 @@ namespace
 
     [[noreturn]] void init(HMODULE this_module)
     {
-        Sleep(1000);
+        Sleep(5000);
 
         // alloc console
         if (globals::console) show_console();

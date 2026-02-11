@@ -100,36 +100,6 @@ namespace il2utils
         return il2cpp::il2cpp_type_get_object(type);
     }
 
-    inline Il2CppClass* inflate(const Il2CppClass* clazz, const std::vector<const Il2CppClass*>& types)
-    {
-        Il2CppObject* system_type = il2cpp::il2cpp_type_get_object(il2cpp::il2cpp_class_get_type(const_cast<
-            Il2CppClass*>(clazz)));
-        auto system_type_args = std::vector<Il2CppObject*>();
-        for (auto type : types)
-        {
-            system_type_args.push_back(il2cpp::il2cpp_type_get_object(il2cpp::il2cpp_class_get_type(const_cast<
-                Il2CppClass*>(type))));
-        }
-
-        Il2CppImage* corlib = resolve_image("mscorlib.dll");
-        const Il2CppClass* type_class = resolve_class(corlib, "System", "RuntimeType");
-        Il2CppArray* array =
-            il2cpp::il2cpp_array_new(const_cast<Il2CppClass*>(type_class),
-                                     system_type_args.size());
-        for (size_t i = 0; i < system_type_args.size(); ++i)
-        {
-            reinterpret_cast<Il2CppObject**>(&array->data)[i] = system_type_args.at(i);
-        }
-
-        auto make_generic_type = il2utils::get_method<Il2CppReflectionType*(*)(
-            Il2CppObject*, Il2CppObject*)>(
-            type_class, "MakeGenericType", 1);
-
-        auto inflated_type = make_generic_type(system_type, array);
-
-        return il2cpp::il2cpp_class_from_system_type(inflated_type);
-    }
-
     inline std::string conv_string(const Il2CppString* string)
     {
         std::stringstream ss;

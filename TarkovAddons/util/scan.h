@@ -83,7 +83,7 @@ namespace scan
             return 0;
         }
         const INT64 relative = *reinterpret_cast<int32_t*>(location); // NOLINT(performance-no-int-to-ptr)
-        logger::info("Found Xref: " + pattern);
+        if (globals::verbose) logger::info("Found Xref: " + pattern);
         return reinterpret_cast<UINT64>(module_start) + res + relative + instruction_size; //  - 0x0000000100000000
     }
 
