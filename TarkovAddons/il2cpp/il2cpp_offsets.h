@@ -6,8 +6,8 @@
 
 namespace il2cpp_offsets
 {
-    inline HMODULE module_base;
-    inline DWORD module_size;
+    static inline HMODULE module_base;
+    static inline DWORD module_size;
 
     // direct pattern
 #define PATTERN(pattern)  reinterpret_cast<PVOID>(scan::find_pattern(pattern, reinterpret_cast<char*>(module_base), module_size))
