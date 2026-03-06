@@ -58,7 +58,7 @@ public:
         char* p_value;
         size_t len;
         errno_t _ = _dupenv_s(&p_value, &len, "APPDATA");
-        std::string path = std::string(p_value) + "\\TarkovAddons";
+        std::string path = std::string(p_value) + "\\TarkovAddonsPvp";
         CreateDirectory(std::wstring(path.begin(), path.end()).c_str(), nullptr);
 
         // read file;
@@ -101,7 +101,7 @@ public:
         char* p_value;
         size_t len;
         errno_t _ = _dupenv_s(&p_value, &len, "APPDATA");
-        std::string path = std::string(p_value) + "\\TarkovAddons";
+        std::string path = std::string(p_value) + "\\TarkovAddonsPvp";
         CreateDirectory(std::wstring(path.begin(), path.end()).c_str(), nullptr);
 
         // create config string
@@ -142,7 +142,7 @@ public:
         char* p_value;
         size_t len;
         errno_t _ = _dupenv_s(&p_value, &len, "APPDATA");
-        std::string path = std::string(p_value) + "\\TarkovAddons";
+        std::string path = std::string(p_value) + "\\TarkovAddonsPvp";
 
         std::ofstream ot(path + "\\" + config);
         ot.write(value.c_str(), static_cast<std::streamsize>(value.size()));

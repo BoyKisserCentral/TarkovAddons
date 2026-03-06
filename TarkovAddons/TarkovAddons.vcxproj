@@ -171,6 +171,7 @@
         <ClInclude Include="config\FloatSliderValue.h"/>
         <ClInclude Include="config\IntSliderValue.h"/>
         <ClInclude Include="config\IntTextboxValue.h"/>
+        <ClInclude Include="config\KeybindValue.h"/>
         <ClInclude Include="config\SelectValue.h"/>
         <ClInclude Include="config\TextboxValue.h"/>
         <ClInclude Include="gui\dxhook\dxhook.h"/>
@@ -197,9 +198,7 @@
         <ClInclude Include="module\impl\ChamsModule.h"/>
         <ClInclude Include="module\impl\ConfigModule.h"/>
         <ClInclude Include="module\impl\EspModule.h"/>
-        <ClInclude Include="module\impl\ItemModule.h"/>
         <ClInclude Include="module\impl\PlayerModule.h"/>
-        <ClInclude Include="module\impl\QuestModule.h"/>
         <ClInclude Include="module\impl\WatermarkModule.h"/>
         <ClInclude Include="module\impl\WeaponModule.h"/>
         <ClInclude Include="module\impl\WorldModule.h"/>
@@ -208,6 +207,7 @@
         <ClInclude Include="module\ModuleManager.h"/>
         <ClInclude Include="util\globals.h"/>
         <ClInclude Include="util\hash.h"/>
+        <ClInclude Include="util\player_utils.h"/>
         <ClInclude Include="util\scan.h"/>
         <ClInclude Include="util\logger.h"/>
         <ClInclude Include="util\utils.h"/>

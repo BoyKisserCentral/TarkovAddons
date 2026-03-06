@@ -10,6 +10,7 @@
 #include "../../assets/asset_bundles.h"
 #include "../../config/ColorpickerValue.h"
 #include "../../config/SelectValue.h"
+#include "../../util/player_utils.h"
 
 class ColorpickerValue;
 class Module;
@@ -27,8 +28,10 @@ public:
     SelectValue* chams_type = conf(new SelectValue(0, {
                                                        "Solid", "Wireframe", "Forcefield", "Glass", "Lava", "Outline"
                                                    }, "Type"));
-    ColorpickerValue* visible_color = conf(new ColorpickerValue({0, 1, 1, 0.75}, "Visible Color"));
-    ColorpickerValue* invisible_color = conf(new ColorpickerValue({0, 0, 1, 0.75}, "Invisible Color"));
+    ColorpickerValue* visible_color_pmc = conf(new ColorpickerValue({0, 1, 1, 0.75}, "Player Visible Color"));
+    ColorpickerValue* invisible_color_pmc = conf(new ColorpickerValue({0, 0, 1, 0.75}, "Player Invisible Color"));
+    ColorpickerValue* visible_color_scav = conf(new ColorpickerValue({1, 0.5, 0, 0.75}, "Scav Visible Color"));
+    ColorpickerValue* invisible_color_scav = conf(new ColorpickerValue({1, 1, 0, 0.75}, "Scav Invisible Color"));
     CheckboxValue* weapon_chams = conf(new CheckboxValue(false, "Weapon Chams"));
     SelectValue* weapon_chams_type = conf(
         new SelectValue(5, {"Solid", "Wireframe", "Forcefield", "Glass", "Lava", "Outline"}, "Weapon Type"));
@@ -157,8 +160,9 @@ public:
         // chams
         if (player_chams->get_value())
         {
-            Il2CppArray* alive_players = game_world_instance.get_field<unity::list*>("AllAlivePlayersList")->
-                                                             m_p_list_array;
+            auto alive_players = game_world_instance
+                                 .get_field<unity::list*>(
+                                     "RegisteredPlayers")->m_p_list_array;
 
             for (size_t i = 0; i < alive_players->max_length; ++i)
             {
@@ -167,11 +171,19 @@ public:
                 if (!player_object) continue;
                 Il2CppObjectInstance player_instance(player_object);
 
-                Il2CppObjectInstance profile_instance(get_profile(player_instance.get_instance()));
-
-                std::string nickname = eft_api::to_english(il2utils::conv_wstring(
-                    profile_instance.get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
-                        profile_instance.get_instance())));
+                Il2CppObject* profile_ptr = get_profile(player_instance.get_instance());
+                std::string nickname;
+                if (std::string(player_object->klass->name) == "ObservedPlayerView")
+                {
+                    nickname = player_utils::get_networked_player_name(&player_instance);
+                }
+                else
+                {
+                    Il2CppObjectInstance profile_instance(profile_ptr);
+                    nickname = eft_api::to_english(il2utils::conv_wstring(
+                        profile_instance.get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
+                            profile_instance.get_instance())));
+                }
 
                 // skip ourselves
                 if (nickname == main_nickname) continue;
@@ -190,6 +202,7 @@ public:
                     game_world_class->image, "EFT", "PlayerBody",
                     player_instance.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_PlayerBody", 0)(
                         player_instance.get_instance()));
+
 
                 const auto body_skins = player_body.get_field<unity::dict<int, Il2CppObject*>*>("BodySkins");
 
@@ -235,8 +248,13 @@ public:
                             const auto set_color = material_instance.get_method<void(*)(
                                 Il2CppObject*, Il2CppString*, unity::color)>("SetColor", 2);
 
-                            const ImVec4 visible = visible_color->get_value();
-                            const ImVec4 invisible = invisible_color->get_value();
+                            bool is_pmc = player_utils::is_networked_player_pmc(&player_instance);
+                            const ImVec4 visible = is_pmc
+                                                       ? visible_color_pmc->get_value()
+                                                       : visible_color_scav->get_value();
+                            const ImVec4 invisible = is_pmc
+                                                         ? invisible_color_pmc->get_value()
+                                                         : invisible_color_scav->get_value();
                             set_color(material_instance.get_instance(), color_visible,
                                       unity::color{visible.x, visible.y, visible.z, visible.w});
                             set_color(material_instance.get_instance(), color_occluded,

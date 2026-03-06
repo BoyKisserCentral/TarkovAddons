@@ -30,7 +30,7 @@ namespace
 
     [[noreturn]] void init(HMODULE this_module)
     {
-        Sleep(5000);
+        Sleep(100);
 
         // alloc console
         if (globals::console) show_console();
@@ -77,7 +77,7 @@ namespace
 
         std::cout << "\n";
         logger::warn(
-            "This is FREE software! If you paid for this software or completed some task to obtain it, you were scammed!");
+            "This is GAY software! You are a gay femboy!");
         std::cout << "\n";
         logger::info("Menu Key: Insert");
         std::cout << "\n";

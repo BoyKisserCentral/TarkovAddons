@@ -5,6 +5,7 @@
 #include "../../il2cpp/il2utils.h"
 #include "../../il2cpp/Il2CppObjectInstance.h"
 #include "../../il2cpp/unity.h"
+#include "../../util/player_utils.h"
 
 class EspModule : Module
 {
@@ -245,7 +246,7 @@ public:
         auto new_players = std::vector<player>();
         if (players->get_value() || npc->get_value())
         {
-            Il2CppArray* alive_players = game_world_instance.get_field<unity::list*>("AllAlivePlayersList")->
+            Il2CppArray* alive_players = game_world_instance.get_field<unity::list*>("RegisteredPlayers")->
                                                              m_p_list_array;
 
             for (size_t i = 0; i < alive_players->max_length; ++i)
@@ -255,11 +256,19 @@ public:
                 if (!player_object) continue;
                 Il2CppObjectInstance player_instance(player_object);
 
-                Il2CppObjectInstance profile_instance(get_profile(player_instance.get_instance()));
-
-                std::string nickname = eft_api::to_english(il2utils::conv_wstring(
-                    profile_instance.get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
-                        profile_instance.get_instance())));
+                Il2CppObject* profile_ptr = get_profile(player_instance.get_instance());
+                std::string nickname;
+                if (std::string(player_object->klass->name) == "ObservedPlayerView")
+                {
+                    nickname = player_utils::get_networked_player_name(&player_instance);
+                }
+                else
+                {
+                    Il2CppObjectInstance profile_instance(profile_ptr);
+                    nickname = eft_api::to_english(il2utils::conv_wstring(
+                        profile_instance.get_method<Il2CppString*(*)(Il2CppObject*)>("get_Nickname", 0)(
+                            profile_instance.get_instance())));
+                }
 
                 // skip ourselves
                 if (nickname == main_nickname) continue;
@@ -267,28 +276,9 @@ public:
                 Il2CppObject* player_game_object = unity::component_get_game_object(player_instance.get_instance());
                 Il2CppObject* player_transform = unity::gameobject_get_transform(player_game_object);
 
-                // check if player has a dogtag to see if it's a pmc, yes this is actually the best way i found to do this
-                Il2CppObjectInstance inventory_controller(
-                    player_instance.get_field<Il2CppObject*>("_inventoryController"));
-
-                Il2CppObjectInstance inventory(
-                    inventory_controller.get_method<Il2CppObject*(*)(Il2CppObject*)>("get_Inventory", 0)(
-                        inventory_controller.get_instance()));
-
-                Il2CppObjectInstance equipment(
-                    inventory.get_field<Il2CppObject*>("Equipment"));
-
-                // 13 = Dogtag
-                Il2CppObjectInstance equipment_slot(
-                    equipment.get_method<Il2CppObject*(*)(Il2CppObject*, int)>("GetSlot", 1)(
-                        equipment.get_instance(), 13));
-
-                Il2CppObject* item_ptr = equipment_slot.get_method<Il2CppObject*(*)(Il2CppObject*)>(
-                    "get_ContainedItem", 0)(
-                    equipment_slot.get_instance());
-
                 new_players.push_back({
-                    .name = nickname, .pmc = item_ptr != nullptr, .pos3d = unity::transform_get_pos(player_transform)
+                    .name = nickname, .pmc = player_utils::is_networked_player_pmc(&player_instance),
+                    .pos3d = unity::transform_get_pos(player_transform)
                 });
             }
 

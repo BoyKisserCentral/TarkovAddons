@@ -4,15 +4,21 @@
 #include <string>
 
 #include "menu.h"
+#include "../../util/utils.h"
 
 namespace imgui_addons
 {
     static void centered_text(ImDrawList* draw_list, ImFont* font, float font_size, const ImVec2& pos, const ImVec4 col,
                               const std::string& text)
     {
+        float old_scale = font->Scale;
+        font->Scale = font_size;
+        ImGui::PushFont(font);
         const ImVec2 size = ImGui::CalcTextSize(text.c_str());
         draw_list->AddText(font, font_size, {pos.x - size.x / 2, pos.y - size.y / 2}, ImGui::GetColorU32(col),
                            text.c_str());
+        ImGui::PopFont();
+        font->Scale = old_scale;
     }
 
     static void centered_text(ImDrawList* draw_list, const ImVec2& pos, const ImVec4 col, const std::string& text)
@@ -29,6 +35,42 @@ namespace imgui_addons
             action();
         }
         if (selected) ImGui::PopStyleColor();
+    }
+
+    static bool keybind(const std::string& label, int* v)
+    {
+        ImGui::PushID(label.c_str());
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        std::string just_text = label.substr(0, label.find("##"));
+        ImGui::Text(just_text.c_str()); // NOLINT(clang-diagnostic-format-security)
+
+        float width = 200 * menu::get_scale_factor();
+        ImGui::SameLine(ImGui::GetWindowWidth() - width - 4 * menu::get_scale_factor());
+        ImGui::SetNextItemWidth(width);
+        auto res = ImGui::Button(
+            std::string((*v == 0 ? "..." : std::string(menu::KeyNames[*v])) + "##" + label).c_str());
+
+        if (res)
+        {
+            *v = 0;
+        }
+
+        if (*v == 0)
+        {
+            for (int i = 2; i < 165; ++i)
+            {
+                if (utils::is_key_down(i))
+                {
+                    *v = i;
+                    break;
+                }
+            }
+        }
+
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        ImGui::PopID();
+
+        return res;
     }
 
     static bool select(const std::string& label, int* v, const std::vector<const char*>& options)

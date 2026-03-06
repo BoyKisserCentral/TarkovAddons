@@ -41,6 +41,11 @@ namespace unity
             return {x + b.x, y + b.y, z + b.z};
         }
 
+        [[nodiscard]] vector3 sub(const vector3 b) const
+        {
+            return {x - b.x, y - b.y, z - b.z};
+        }
+
         [[nodiscard]] float distance(const vector3 b) const
         {
             return static_cast<float>(sqrt(pow(x - b.x, 2) + pow(y - b.y, 2) + pow(z - b.z, 2)));

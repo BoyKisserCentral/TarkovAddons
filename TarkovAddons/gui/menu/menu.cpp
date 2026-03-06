@@ -89,7 +89,7 @@ namespace menu
         ImGui::GetIO().WantCaptureMouse = is_active();
         if (is_active())
         {
-            constexpr float width = 700;
+            constexpr float width = 370;
             constexpr float height = 500;
             ImGui::SetNextWindowSize(ImVec2(width * scale_factor, height * scale_factor), ImGuiCond_Once);
             ImGui::SetNextWindowBgAlpha(1.0f);
@@ -121,14 +121,7 @@ namespace menu
                 });
                 ImGui::EndTabBar();
 
-                bool overflow = false;
-                ImVec2 window_pos = ImGui::GetWindowPos();
-                ImVec2 window_size = ImGui::GetWindowSize();
-                float window_min = window_pos.x + ImGui::GetCursorPosX();
-                float window_max = window_pos.x + window_size.x;
-                float window_space = window_max - window_min;
-                ImGui::BeginChild("##Child1", {0.5f * window_space - 4 * scale_factor, 0});
-                ModuleManager::get_instance()->apply([window_space, height, &overflow](Module* m)
+                ModuleManager::get_instance()->apply([](Module* m)
                 {
                     if (m->category != selected_tab) return;
                     ImGui::Dummy({0, 3 * scale_factor});
@@ -144,22 +137,7 @@ namespace menu
                         c->draw();
                         ImGui::Unindent();
                     });
-
-                    if (ImGui::GetCursorPosY() >= 0.5f * height * scale_factor)
-                    {
-                        overflow = true;
-                        ImGui::EndChild();
-                        ImGui::SameLine();
-                        ImGui::BeginChild("##Child2", {0.5f * window_space - 4 * scale_factor, 0});
-                    }
                 });
-                if (!overflow)
-                {
-                    ImGui::EndChild();
-                    ImGui::SameLine();
-                    ImGui::BeginChild("##Child2", {0.5f * window_space - 4 * scale_factor, 0});
-                }
-                ImGui::EndChild();
             }
             ImGui::End();
         }

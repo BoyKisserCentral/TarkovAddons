@@ -112,6 +112,7 @@ namespace il2utils
 
     inline std::wstring conv_wstring(const Il2CppString* string)
     {
+        if (!string) return L"";
         std::wstringstream ss;
         for (int i = 0; i < string->length; ++i)
         {
