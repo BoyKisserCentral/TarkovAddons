@@ -6,6 +6,12 @@
 # include <d3d11.h>
 # include <d3d12.h>
 
+
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dx11.lib")
+#pragma comment(lib, "d3d12.lib")
+
 namespace dxhook
 {
     LRESULT __stdcall WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

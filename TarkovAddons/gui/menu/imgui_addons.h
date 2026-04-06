@@ -45,6 +45,7 @@ namespace imgui_addons
                                 static_cast<int32_t>(options.size()));
 
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        ImGui::Dummy({0, 0});
         ImGui::PopID();
 
         return res;
@@ -63,6 +64,7 @@ namespace imgui_addons
         auto res = ImGui::SliderFloat(std::string("##" + label).c_str(), v, min, max);
 
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        ImGui::Dummy({0, 0});
         ImGui::PopID();
 
         return res;
@@ -81,6 +83,7 @@ namespace imgui_addons
         auto res = ImGui::SliderInt(std::string("##" + label).c_str(), v, min, max);
 
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        ImGui::Dummy({0, 0});
         ImGui::PopID();
 
         return res;
@@ -100,6 +103,7 @@ namespace imgui_addons
                                      ImGuiColorEditFlags_PickerHueWheel);
 
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        ImGui::Dummy({0, 0});
         ImGui::PopID();
 
         return res;
@@ -118,6 +122,7 @@ namespace imgui_addons
         auto res = ImGui::InputInt(std::string("##" + label).c_str(), v);
 
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        ImGui::Dummy({0, 0});
         ImGui::PopID();
 
         return res;
@@ -136,6 +141,7 @@ namespace imgui_addons
         auto res = ImGui::InputText(std::string("##" + label).c_str(), v);
 
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        ImGui::Dummy({0, 0});
         ImGui::PopID();
 
         return res;
@@ -175,6 +181,7 @@ namespace imgui_addons
         );
 
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y * 2 * menu::get_scale_factor());
+        ImGui::Dummy({0, 0});
         ImGui::PopID();
 
         return clicked;

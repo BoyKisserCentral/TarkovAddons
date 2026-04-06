@@ -90,7 +90,7 @@ namespace menu
         if (is_active())
         {
             constexpr float width = 700;
-            constexpr float height = 500;
+            constexpr float height = 550;
             ImGui::SetNextWindowSize(ImVec2(width * scale_factor, height * scale_factor), ImGuiCond_Once);
             ImGui::SetNextWindowBgAlpha(1.0f);
             if (ImGui::Begin(globals::get_display_title().c_str(), &draw_imgui,
@@ -144,6 +144,7 @@ namespace menu
                         c->draw();
                         ImGui::Unindent();
                     });
+                    ImGui::Dummy({0, 0});
 
                     if (ImGui::GetCursorPosY() >= 0.5f * height * scale_factor)
                     {
