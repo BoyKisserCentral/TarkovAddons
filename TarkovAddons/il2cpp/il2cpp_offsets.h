@@ -41,16 +41,16 @@ namespace il2cpp_offsets
         GetModuleInformation(GetCurrentProcess(), module_base, &info, sizeof(MODULEINFO));
         module_size = info.SizeOfImage;
 
-        il2cpp_class_from_name = PATTERN_CALL("E8 ? ? ? ? 48 8B C8 48 8B D8 E8 ? ? ? ? 48 8D 15");
-        il2cpp_class_get_nested_types = PATTERN_CALL("E8 ? ? ? ? 48 8B F8 48 85 C0 74 ? 4C 8B 47");
-        il2cpp_class_get_field_from_name = PATTERN_CALL("E8 ? ? ? ? 48 8B D8 48 85 C0 0F 84 ? ? ? ? E8");
-        il2cpp_class_get_method_from_name = PATTERN_CALL("E8 ? ? ? ? 48 89 74 24 ? 48 8D 4C 24 ? 48 89 4C 24 ? 4C 8D 4C 24 ? 4C 8B C7");
-        il2cpp_domain_get = PATTERN_CALL("E8 ? ? ? ? 48 8B F0 48 8B C8 E8 ? ? ? ? 48 8B C8");
-        il2cpp_domain_get_assemblies = PATTERN("40 53 48 83 EC ? 48 8B DA E8 ? ? ? ? 48 8B 48");
-        il2cpp_field_static_get_value = PATTERN_CALL("E8 ? ? ? ? 48 8B 5C 24 ? 48 85 DB 74 ? ? ? ? 75 ? ? ? ? 48 83 E0 ? 0F B6 B0");
-        il2cpp_field_static_set_value = PATTERN_CALL("E8 ? ? ? ? C6 05 ? ? ? ? ? 0F 57 C0 0F 11 44 24 ? 66 0F 6F 0D");
-        il2cpp_string_new = PATTERN_CALL("E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 48 8D 50 ? 41 83 FE");
-        il2cpp_type_get_object = PATTERN_CALL("E8 ? ? ? ? 48 8D 4D ? 48 89 44 2F");
+        il2cpp_class_from_name = PATTERN_CALL("E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? 48 8B F8 33 D2 48 8B C8 E8 ? ? ? ? 4C 8D 3D");
+        il2cpp_class_get_nested_types = PATTERN("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B FA 48 8B D9 48 85 D2 0F 84 ? ? ? ? 48 83 79 ? 00");
+        il2cpp_class_get_field_from_name = PATTERN_CALL("E8 ? ? ? ? 48 8B 15 ? ? ? ? 48 8B C8 E8 ? ? ? ? 0F 57 C0");
+        il2cpp_class_get_method_from_name = PATTERN("48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 8B F1 41 8B F8");
+        il2cpp_domain_get = PATTERN_CALL("E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? 48 8B D8 48 89 44 24 ? 45 33 C9 4C 8B C7 48 8B D6");
+        il2cpp_domain_get_assemblies = PATTERN("48 8B 05 ? ? ? ? 48 2B 05 ? ? ? ? 48 C1 F8");
+        il2cpp_field_static_get_value = PATTERN_CALL("E8 ? ? ? ? 48 8B 44 24 ? EB ? 49 8B C6");
+        il2cpp_field_static_set_value = PATTERN_CALL("E8 ? ? ? ? 0F 57 C0 0F 11 44 24 ? 48 C7 44 24 ? ? ? ? ? 48 C7 44 24 ? ? ? ? ? 8B 05");
+        il2cpp_string_new = PATTERN("48 C7 C2 ? ? ? ? 48 FF C2 ? ? ? 00 75 ? E9");
+        il2cpp_type_get_object = PATTERN_CALL("E8 ? ? ? ? 48 8B F8 48 85 F6 0F 84 ? ? ? ? 48 8B 05 ? ? ? ? 48 8B D7");
 
         logger::info("Il2CPP API Loaded");
     }
